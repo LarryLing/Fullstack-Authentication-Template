@@ -1,0 +1,14 @@
+{
+  "name": "Fullstack-Authentication-Template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd backend && pnpm install && pnpm build && cd ../frontend && pnpm install && pnpm build",
+    "start": "cd backend && pnpm start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "packageManager": "pnpm@10.12.1"
+}

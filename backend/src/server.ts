@@ -1,8 +1,7 @@
-import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express from "express";
-import helmet from "helmet";
+import path from "path";
 
 import config from "./config/index.js";
 import { checkConnection, disconnectFromDatabase } from "./lib/db.js";
@@ -10,33 +9,39 @@ import v1Routes from "./routes/v1/index.js";
 
 const app = express();
 
-const corsOptions: CorsOptions = {
-  credentials: true,
-  origin(origin, callback) {
-    if (config.NODE_ENV === "development" || !origin || config.WHITELISTED_ORIGINS.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS error: ${origin} is not allowed by CORS`), false);
-      console.log(`CORS error: ${origin} is not allowed by CORS`);
-    }
-  },
-};
+if (config.NODE_ENV === "development") {
+  const corsOptions: CorsOptions = {
+    credentials: true,
+    origin(origin, callback) {
+      if (config.NODE_ENV === "development" || !origin || config.WHITELISTED_ORIGINS.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS error: ${origin} is not allowed by CORS`), false);
+        console.log(`CORS error: ${origin} is not allowed by CORS`);
+      }
+    },
+  };
 
-app.use(cors(corsOptions));
+  app.use(cors(corsOptions));
+}
 
 app.use(express.json());
 
-app.use(express.urlencoded({ extended: true }));
-
 app.use(cookieParser());
-
-app.use(compression({ threshold: 1024 }));
-
-app.use(helmet());
 
 (async () => {
   try {
     app.use("/api/v1", v1Routes);
+
+    if (config.NODE_ENV === "production") {
+      const __dirname = path.resolve();
+
+      app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+      app.get(/(.*)/, (_req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+      });
+    }
 
     app.listen(config.PORT, () => {
       console.log(`Server running: http://localhost:${config.PORT}`);
