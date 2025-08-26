@@ -11,18 +11,16 @@ import v1Routes from "./routes/v1/index.js";
 const app = express();
 
 const corsOptions: CorsOptions = {
+  credentials: true,
   origin(origin, callback) {
     if (config.NODE_ENV === "development" || !origin || config.WHITELISTED_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
-      callback(
-        new Error(`CORS error: ${origin} is not allowed by CORS`),
-        false
-      );
+      callback(new Error(`CORS error: ${origin} is not allowed by CORS`), false);
       console.log(`CORS error: ${origin} is not allowed by CORS`);
     }
   },
-}
+};
 
 app.use(cors(corsOptions));
 

@@ -22,9 +22,6 @@
   "license": "MIT",
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
-    "@types/compression": "^1.8.1",
-    "@types/cookie-parser": "^1.4.9",
-    "@types/cors": "^2.8.19",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -35,6 +32,9 @@
     "mysql2": "^3.14.3"
   },
   "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
     "@eslint/js": "^9.34.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/express": "^5.0.3",

@@ -9,7 +9,7 @@ const db = mysql.createPool({
   queueLimit: 0,
   user: process.env.RDS_USERNAME,
   waitForConnections: true,
-})
+});
 
 export const checkConnection = async () => {
   try {
@@ -20,7 +20,7 @@ export const checkConnection = async () => {
     console.error("Could not connect to database:", error);
     throw error;
   }
-}
+};
 
 export const disconnectFromDatabase = async () => {
   try {
@@ -30,6 +30,6 @@ export const disconnectFromDatabase = async () => {
     console.error("Error disconnecting from database:", error);
     throw error;
   }
-}
+};
 
 export default db;
