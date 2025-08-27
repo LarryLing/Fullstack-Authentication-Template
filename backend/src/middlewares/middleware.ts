@@ -1,6 +1,6 @@
-import { RequestHandler } from "express";
+import { Request, Response } from "express";
 
-export const middleware: RequestHandler = (req, res) => {
+export const middleware = (req: Request, res: Response): void => {
   res.send("Hello World!");
   console.log("Response sent");
 };

@@ -5,7 +5,7 @@ import path from "path";
 
 import config from "./config/index.js";
 import { checkConnection, disconnectFromDatabase } from "./lib/db.js";
-import v1Routes from "./routes/v1/index.js";
+import authRoutes from "./routes/auth-routes.js";
 
 const app = express();
 
@@ -31,7 +31,7 @@ app.use(cookieParser());
 
 (async () => {
   try {
-    app.use("/api/v1", v1Routes);
+    app.use("/api/auth", authRoutes);
 
     if (config.NODE_ENV === "production") {
       const __dirname = path.resolve();

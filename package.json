@@ -4,8 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd backend && pnpm install && pnpm build && cd ../frontend && pnpm install && pnpm build",
-    "start": "cd backend && pnpm start"
+    "dev": "cd backend && pnpm dev && cd ../frontend && pnpm dev",
+    "build": "cd backend && pnpm build && cd ../frontend && pnpm build",
+    "start": "cd backend && pnpm start",
+    "install": "cd backend && pnpm install && cd ../frontend && pnpm install",
+    "lint": "cd backend && pnpm lint && cd ../frontend && pnpm lint",
+    "lint:fix": "cd backend && pnpm lint:fix && cd ../frontend && pnpm lint:fix",
+    "format": "cd backend && pnpm format && cd ../frontend && pnpm format",
+    "format:check": "cd backend && pnpm format:check && cd ../frontend && pnpm format:check"
   },
   "keywords": [],
   "author": "",

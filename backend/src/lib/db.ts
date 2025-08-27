@@ -11,7 +11,7 @@ const db = mysql.createPool({
   waitForConnections: true,
 });
 
-export const checkConnection = async () => {
+export const checkConnection = async (): Promise<void> => {
   try {
     const connection = await db.getConnection();
     console.log("Connected to MySQL database");
@@ -22,7 +22,7 @@ export const checkConnection = async () => {
   }
 };
 
-export const disconnectFromDatabase = async () => {
+export const disconnectFromDatabase = async (): Promise<void> => {
   try {
     await db.end();
     console.log("Disconnecting from MySQL database");
