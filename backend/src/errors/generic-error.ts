@@ -1,9 +1,11 @@
+import { HttpStatusCode } from "../constants/http.js";
+
 class GenericError<C extends string> extends Error {
   message: string;
-  status: number;
+  status: HttpStatusCode;
   code: C;
 
-  constructor({ message, status, code }: { message: string; status: number; code: C }) {
+  constructor({ message, status, code }: { message: string; status: HttpStatusCode; code: C }) {
     super();
     this.message = message;
     this.status = status;

@@ -1,12 +1,13 @@
 import GenericError from "./generic-error.js";
 
-type AuthErrorCodes =
-  | "USER_NOT_FOUND" // A user, verified or not, does not exist
-  | "USER_ALREADY_EXISTS" // A verified user already exists
-  | "USER_NOT_VERIFIED" // A verified user does not exist
-  | "INVALID_CREDENTIALS" // The provided credentials are invalid
-  | "INVALID_TOKEN" // The provided token is invalid
-  | "TOKEN_EXPIRED"; // The provided token has expired
+export const enum AuthErrorCodes {
+  USER_NOT_FOUND = "USER_NOT_FOUND",
+  USER_ALREADY_EXISTS = "USER_ALREADY_EXISTS",
+  USER_NOT_VERIFIED = "USER_NOT_VERIFIED",
+  INVALID_CREDENTIALS = "INVALID_CREDENTIALS",
+  INVALID_TOKEN = "INVALID_TOKEN",
+  TOKEN_EXPIRED = "TOKEN_EXPIRED",
+}
 
 class AuthError extends GenericError<AuthErrorCodes> {}
 

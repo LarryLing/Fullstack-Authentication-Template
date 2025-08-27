@@ -5,8 +5,8 @@ import path from "path";
 
 import "./env-loader.js";
 import config from "./config/index.js";
-import { errorMiddleware } from "./middlewares/error-middleware.js";
-import authRoutes from "./routes/auth-routes.js";
+import { errorMiddleware } from "./middlewares/error.middleware.js";
+import authRoutes from "./routes/auth.route.js";
 import { checkConnection, disconnectFromDatabase } from "./services/db.js";
 
 const app = express();

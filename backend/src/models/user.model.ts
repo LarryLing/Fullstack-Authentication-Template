@@ -9,8 +9,4 @@ export interface User extends RowDataPacket {
   created_at: number;
   verified_at: null | number;
   last_logged_in_at: null | number;
-  reset_password_token: null | number;
-  reset_password_token_expires_at: null | number;
-  verification_token: null | number;
-  verification_token_expires_at: null | number;
 }

@@ -1,7 +1,7 @@
 import { CookieOptions, Response } from "express";
 
 import { NODE_ENV } from "../constants/env.js";
-import { fifteenMinutesFromNow, thirtyDaysFromNow } from "./date.js";
+import { sevenDaysFromNow } from "./date.js";
 
 const secure = NODE_ENV !== "development";
 
@@ -11,23 +11,14 @@ const defaults: CookieOptions = {
   secure,
 };
 
-const getAccessCookieOptions = (): CookieOptions => {
-  return {
-    ...defaults,
-    expires: fifteenMinutesFromNow(),
-  };
-};
-
 const getRefreshCookieOptions = (): CookieOptions => {
   return {
     ...defaults,
-    expires: thirtyDaysFromNow(),
+    expires: sevenDaysFromNow(),
     path: "/api/auth/refresh",
   };
 };
 
-export const setAuthCookies = (res: Response, access_token: string, refresh_token: string): void => {
-  res
-    .cookie("access_token", access_token, getAccessCookieOptions())
-    .cookie("refresh_token", refresh_token, getRefreshCookieOptions());
+export const setAuthCookies = (res: Response, refresh_token: string): void => {
+  res.cookie("refresh_token", refresh_token, getRefreshCookieOptions());
 };
