@@ -4,6 +4,7 @@ import express from "express";
 import path from "path";
 
 import config from "./config/index.js";
+import { errorMiddleware } from "./middlewares/error-middleware.js";
 import authRoutes from "./routes/auth-routes.js";
 import { checkConnection, disconnectFromDatabase } from "./services/db.js";
 
@@ -46,6 +47,8 @@ app.use(cookieParser());
     app.listen(config.PORT, () => {
       console.log(`Server running: http://localhost:${config.PORT}`);
     });
+
+    app.use(errorMiddleware);
 
     await checkConnection();
   } catch (error) {

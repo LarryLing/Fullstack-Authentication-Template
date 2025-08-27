@@ -5,6 +5,7 @@ dotenv.config();
 const config = {
   NODE_ENV: process.env.NODE_ENV || "development",
   PORT: process.env.PORT || 3000,
+  DEBUG: process.env.DEBUG === "true" || false,
   WHITELISTED_ORIGINS: [process.env.WHITELISTED_ORIGINS || "http://localhost:5173"],
 };
 

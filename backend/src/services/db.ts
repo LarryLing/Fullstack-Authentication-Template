@@ -1,13 +1,23 @@
 import mysql from "mysql2/promise";
 
+if (
+  !process.env.MYSQL_DB_NAME ||
+  !process.env.MYSQL_HOSTNAME ||
+  !process.env.MYSQL_PASSWORD ||
+  !process.env.MYSQL_PORT ||
+  !process.env.MYSQL_USERNAME
+) {
+  throw new Error("Missing MySQL environment variables");
+}
+
 const db = mysql.createPool({
   connectionLimit: 10,
-  database: process.env.RDS_DB_NAME,
-  host: process.env.RDS_HOSTNAME,
-  password: process.env.RDS_PASSWORD,
-  port: parseInt(process.env.RDS_PORT || "3306"),
+  database: process.env.MYSQL_DB_NAME,
+  host: process.env.MYSQL_HOSTNAME,
+  password: process.env.MYSQL_PASSWORD,
+  port: parseInt(process.env.MYSQL_PORT || "3306"),
   queueLimit: 0,
-  user: process.env.RDS_USERNAME,
+  user: process.env.MYSQL_USERNAME,
   waitForConnections: true,
 });
 
