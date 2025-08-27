@@ -3,6 +3,7 @@ import cors, { CorsOptions } from "cors";
 import express from "express";
 import path from "path";
 
+import "./env-loader.js";
 import config from "./config/index.js";
 import { errorMiddleware } from "./middlewares/error-middleware.js";
 import authRoutes from "./routes/auth-routes.js";
@@ -12,15 +13,15 @@ const app = express();
 
 if (config.NODE_ENV === "development") {
   const corsOptions: CorsOptions = {
-    credentials: true,
     origin(origin, callback) {
-      if (config.NODE_ENV === "development" || !origin || config.WHITELISTED_ORIGINS.includes(origin)) {
+      if (!origin || config.WHITELISTED_ORIGIN === origin) {
         callback(null, true);
       } else {
         callback(new Error(`CORS error: ${origin} is not allowed by CORS`), false);
         console.log(`CORS error: ${origin} is not allowed by CORS`);
       }
     },
+    credentials: true,
   };
 
   app.use(cors(corsOptions));
@@ -28,37 +29,28 @@ if (config.NODE_ENV === "development") {
 
 app.use(express.json());
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 
-(async () => {
-  try {
-    app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
-    if (config.NODE_ENV === "production") {
-      const __dirname = path.resolve();
+app.use(errorMiddleware);
 
-      app.use(express.static(path.join(__dirname, "../frontend/dist")));
+if (config.NODE_ENV === "production") {
+  const __dirname = path.resolve();
 
-      app.get(/(.*)/, (_req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-      });
-    }
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-    app.listen(config.PORT, () => {
-      console.log(`Server running: http://localhost:${config.PORT}`);
-    });
+  app.get(/(.*)/, (_req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+  });
+}
 
-    app.use(errorMiddleware);
-
-    await checkConnection();
-  } catch (error) {
-    console.error("Error starting server:", error);
-
-    if (config.NODE_ENV === "production") {
-      process.exit(1);
-    }
-  }
-})();
+app.listen(config.PORT, async () => {
+  console.log(`Server running on port ${config.PORT} in ${config.NODE_ENV} mode`);
+  await checkConnection();
+});
 
 const handleServerShutdown = async () => {
   try {

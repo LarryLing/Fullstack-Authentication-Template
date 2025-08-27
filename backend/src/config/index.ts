@@ -1,12 +1,10 @@
-import dotenv from "dotenv";
-
-dotenv.config();
+import { NODE_ENV, PORT, DEBUG, WHITELISTED_ORIGIN } from "../constants/env.js";
 
 const config = {
-  NODE_ENV: process.env.NODE_ENV || "development",
-  PORT: process.env.PORT || 3000,
-  DEBUG: process.env.DEBUG === "true" || false,
-  WHITELISTED_ORIGINS: [process.env.WHITELISTED_ORIGINS || "http://localhost:5173"],
+  NODE_ENV,
+  PORT,
+  DEBUG,
+  WHITELISTED_ORIGIN,
 };
 
 export default config;

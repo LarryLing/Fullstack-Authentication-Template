@@ -5,7 +5,7 @@ import GenericError from "../errors/generic-error.js";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorMiddleware = (error: unknown, _req: Request, res: Response, _next: NextFunction) => {
-  if (config.DEBUG) {
+  if (config.DEBUG === "true") {
     console.error(error);
   }
 

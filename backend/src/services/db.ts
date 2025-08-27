@@ -1,23 +1,15 @@
 import mysql from "mysql2/promise";
 
-if (
-  !process.env.MYSQL_DB_NAME ||
-  !process.env.MYSQL_HOSTNAME ||
-  !process.env.MYSQL_PASSWORD ||
-  !process.env.MYSQL_PORT ||
-  !process.env.MYSQL_USERNAME
-) {
-  throw new Error("Missing MySQL environment variables");
-}
+import { MYSQL_DB_NAME, MYSQL_HOSTNAME, MYSQL_PASSWORD, MYSQL_PORT, MYSQL_USERNAME } from "../constants/env.js";
 
 const db = mysql.createPool({
   connectionLimit: 10,
-  database: process.env.MYSQL_DB_NAME,
-  host: process.env.MYSQL_HOSTNAME,
-  password: process.env.MYSQL_PASSWORD,
-  port: parseInt(process.env.MYSQL_PORT || "3306"),
+  database: MYSQL_DB_NAME,
+  host: MYSQL_HOSTNAME,
+  password: MYSQL_PASSWORD,
+  port: parseInt(MYSQL_PORT),
   queueLimit: 0,
-  user: process.env.MYSQL_USERNAME,
+  user: MYSQL_USERNAME,
   waitForConnections: true,
 });
 
@@ -28,7 +20,6 @@ export const checkConnection = async (): Promise<void> => {
     connection.release();
   } catch (error) {
     console.error("Could not connect to database:", error);
-    throw error;
   }
 };
 
