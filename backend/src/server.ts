@@ -4,8 +4,8 @@ import express from "express";
 import path from "path";
 
 import config from "./config/index.js";
-import { checkConnection, disconnectFromDatabase } from "./lib/db.js";
 import authRoutes from "./routes/auth-routes.js";
+import { checkConnection, disconnectFromDatabase } from "./services/db.js";
 
 const app = express();
 

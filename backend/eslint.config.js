@@ -16,5 +16,12 @@ export default tseslint.config(
       },
     },
   },
-  perfectionist.configs["recommended-natural"]
+  {
+    plugins: {
+      perfectionist: perfectionist,
+    },
+    rules: {
+      "perfectionist/sort-imports": "error",
+    },
+  }
 );
