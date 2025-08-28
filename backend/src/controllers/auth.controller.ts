@@ -21,7 +21,7 @@ export const email = async (
 ): Promise<void> => {
   const { email } = req.body;
 
-  const [user] = await db.query<User[]>("SELECT * FROM users WHERE email = ?", [email]);
+  const [user] = await db.query<RowDataPacket[]>("SELECT 1 FROM users WHERE email = ?", [email]);
 
   if (!user[0]) {
     throw new AuthError({
@@ -49,6 +49,19 @@ export const requestEmailVerification = async (
       message: "An account with this email already exists, please login",
       status: CONFLICT,
       code: AuthErrorCodes.USER_ALREADY_EXISTS,
+    });
+  }
+
+  const [codes] = await db.query<VerificationCode[]>(
+    "SELECT * FROM verification_codes WHERE email = ? AND type = ? AND expires_at > ?",
+    [email, VerificationCodeType.EMAIL_CONFIRMATION, Date.now()]
+  );
+
+  if (codes.length > 0) {
+    throw new AuthError({
+      message: "A verification code has already been sent to this email, please check your inbox",
+      status: CONFLICT,
+      code: AuthErrorCodes.VERIFICATION_CODE_ALREADY_SENT,
     });
   }
 
@@ -81,29 +94,20 @@ export const signup = async (
   const { first_name, last_name, email, password, email_confirmation_code } = req.body;
 
   const [verification_code] = await db.query<VerificationCode[]>(
-    "SELECT * FROM verification_codes WHERE email = ? AND code = ? AND type = ?",
-    [email, email_confirmation_code, VerificationCodeType.EMAIL_CONFIRMATION]
+    "SELECT * FROM verification_codes WHERE email = ? AND code = ? AND type = ? AND expires_at > ?",
+    [email, email_confirmation_code, VerificationCodeType.EMAIL_CONFIRMATION, Date.now()]
   );
 
   if (!verification_code[0]) {
     throw new AuthError({
-      message: "The provided verification token is invalid, please request a new one",
+      message: "The provided verification code is invalid or has expired, please request a new one",
       status: BAD_REQUEST,
-      code: AuthErrorCodes.INVALID_TOKEN,
+      code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
     });
   }
 
-  if (verification_code[0].expires_at < Date.now()) {
-    throw new AuthError({
-      message: "The provided verification token has expired, please request a new one",
-      status: BAD_REQUEST,
-      code: AuthErrorCodes.TOKEN_EXPIRED,
-    });
-  }
-
-  await db.query("DELETE FROM verification_codes WHERE email = ? AND code = ? AND type = ?", [
+  await db.query("DELETE FROM verification_codes WHERE email = ? AND type = ?", [
     email,
-    email_confirmation_code,
     VerificationCodeType.EMAIL_CONFIRMATION,
   ]);
 
@@ -228,6 +232,19 @@ export const requestPasswordReset = async (
     });
   }
 
+  const [codes] = await db.query<VerificationCode[]>(
+    "SELECT * FROM verification_codes WHERE email = ? AND type = ? AND expires_at > ?",
+    [email, VerificationCodeType.PASSWORD_RESET, Date.now()]
+  );
+
+  if (codes.length > 0) {
+    throw new AuthError({
+      message: "A verification code has already been sent to this email, please check your inbox",
+      status: CONFLICT,
+      code: AuthErrorCodes.VERIFICATION_CODE_ALREADY_SENT,
+    });
+  }
+
   const reset_password_code = generateVerificationCode();
   const reset_password_code_issued_at = Date.now();
   const reset_password_code_expires_at = tenMinutesFromNow();
@@ -253,29 +270,20 @@ export const resetPassword = async (
   const { email, password_reset_code, password } = req.body;
 
   const [verification_code] = await db.query<VerificationCode[]>(
-    "SELECT * FROM verification_codes WHERE email = ? AND code = ? AND type = ?",
-    [email, password_reset_code, VerificationCodeType.PASSWORD_RESET]
+    "SELECT * FROM verification_codes WHERE email = ? AND code = ? AND type = ? AND expires_at > ?",
+    [email, password_reset_code, VerificationCodeType.PASSWORD_RESET, Date.now()]
   );
 
   if (!verification_code[0]) {
     throw new AuthError({
-      message: "The provided reset password token is invalid, please request a new one",
+      message: "The provided reset password code is invalid or has expired, please request a new one",
       status: BAD_REQUEST,
-      code: AuthErrorCodes.INVALID_TOKEN,
+      code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
     });
   }
 
-  if (verification_code[0].expires_at < Date.now()) {
-    throw new AuthError({
-      message: "The provided reset password token has expired, please request a new one",
-      status: BAD_REQUEST,
-      code: AuthErrorCodes.TOKEN_EXPIRED,
-    });
-  }
-
-  await db.query("DELETE FROM verification_codes WHERE email = ? AND code = ? AND type = ?", [
+  await db.query("DELETE FROM verification_codes WHERE email = ? AND type = ?", [
     email,
-    password_reset_code,
     VerificationCodeType.PASSWORD_RESET,
   ]);
 
