@@ -1,11 +1,14 @@
 import { RowDataPacket } from "mysql2/promise";
 
-import { VerificationCodeType } from "../types/verification-code-type.js";
+export const enum VerificationCodeTypes {
+  EMAIL_CONFIRMATION = "email_confirmation",
+  PASSWORD_RESET = "password_reset",
+}
 
 export interface VerificationCode extends RowDataPacket {
-  email: string;
+  user_id: string;
   issued_at: number;
   expires_at: number;
   code: string;
-  type: VerificationCodeType;
+  type: VerificationCodeTypes;
 }

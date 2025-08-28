@@ -1,16 +1,14 @@
-import jwt, { SignOptions, VerifyOptions } from "jsonwebtoken";
+import jwt, { JwtPayload, SignOptions, VerifyOptions } from "jsonwebtoken";
 
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../constants/env.js";
-import { User } from "../models/user.model.js";
-import { JwtTokenType } from "../types/jwt-token.type.js";
 
-export type TokenPayload = {
-  sub: User["id"];
-  iat: number;
-  exp: number;
-  jti: string;
+export const enum JwtTokenType {
+  ACCESS = "access",
+  REFRESH = "refresh",
+}
+
+export type TokenPayload = JwtPayload & {
   type: JwtTokenType;
-  aud: string;
 };
 
 export type SignOptionsAndSecret = SignOptions & {
@@ -39,7 +37,7 @@ export const RefreshTokenSignOptions: SignOptionsAndSecret = {
   secret: REFRESH_TOKEN_SECRET,
 };
 
-export const generateJwtToken = (payload: TokenPayload, options?: SignOptionsAndSecret) => {
+export const generateJwtToken = (payload: JwtPayload, options?: SignOptionsAndSecret) => {
   const { secret, ...signOptions } = options || AccessTokenSignOptions;
 
   return jwt.sign(payload, secret, {

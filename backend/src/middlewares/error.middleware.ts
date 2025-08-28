@@ -2,11 +2,16 @@ import { Request, Response, NextFunction } from "express";
 
 import config from "../config/index.js";
 import GenericError from "../errors/generic-error.js";
+import { clearAuthCookies, REFRESH_COOKIE_PATH } from "../utils/cookie.js";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const errorMiddleware = (error: unknown, _req: Request, res: Response, _next: NextFunction) => {
+export const errorMiddleware = (error: unknown, req: Request, res: Response, _next: NextFunction) => {
   if (config.DEBUG === "true") {
     console.error(error);
+  }
+
+  if (req.path === REFRESH_COOKIE_PATH) {
+    clearAuthCookies(res);
   }
 
   if (error instanceof GenericError) {
