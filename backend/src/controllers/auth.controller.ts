@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { RowDataPacket } from "mysql2/promise";
 
+import { REFRESH_TOKEN_SECRET } from "../constants/env.js";
 import { BAD_REQUEST, CONFLICT, CREATED, NOT_FOUND, OK, UNAUTHORIZED } from "../constants/http.js";
 import AuthError, { AuthErrorCodes } from "../errors/auth-error.js";
 import { User } from "../models/user.model.js";
@@ -10,9 +11,14 @@ import { AuthRequestBodyType } from "../types/auth-request-body.type.js";
 import { JwtTokenType } from "../types/jwt-token.type.js";
 import { VerificationCodeType } from "../types/verification-code-type.js";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
-import { clearAuthCookies, setAuthCookies } from "../utils/cookie.js";
-import { tenMinutesFromNow, sevenDaysFromNow, oneHourFromNow } from "../utils/date.js";
-import { generateJwtToken, RefreshTokenSignOptions } from "../utils/jwt.js";
+import {
+  clearAuthCookies,
+  getRefreshTokenCookieOptions,
+  getAccessTokenCookieOptions,
+  setAuthCookies,
+} from "../utils/cookie.js";
+import { tenMinutesFromNow, sevenDaysFromNow, oneHourFromNow, ONE_DAY_IN_MILLISECONDS } from "../utils/date.js";
+import { generateJwtToken, RefreshTokenSignOptions, verifyJwtToken } from "../utils/jwt.js";
 import { generateVerificationCode } from "../utils/verification-code.js";
 
 export const email = async (
@@ -42,7 +48,7 @@ export const requestEmailVerification = async (
 ): Promise<void> => {
   const { email } = req.body;
 
-  const [user] = await db.query<RowDataPacket[]>("SELECT 1 FROM users WHERE email = ?", [email]);
+  const [user] = await db.query<User[]>("SELECT * FROM users WHERE email = ?", [email]);
 
   if (user[0]) {
     throw new AuthError({
@@ -300,5 +306,60 @@ export const logout = async (_req: Request, res: Response): Promise<void> => {
 
   res.status(OK).json({
     message: "Successfully logged out",
+  });
+};
+
+export const refresh = async (req: Request, res: Response): Promise<void> => {
+  const refresh_token: string | undefined = req.cookies.refresh_token;
+
+  if (!refresh_token) {
+    throw new AuthError({
+      message: "No refresh token found, please login",
+      status: UNAUTHORIZED,
+      code: AuthErrorCodes.MISSING_REFRESH_TOKEN,
+    });
+  }
+
+  const { payload } = verifyJwtToken(refresh_token, { secret: REFRESH_TOKEN_SECRET });
+
+  if (!payload || payload.type !== JwtTokenType.REFRESH || payload.exp < Date.now()) {
+    throw new AuthError({
+      message: "The provided refresh token is invalid or has expired, please login",
+      status: UNAUTHORIZED,
+      code: AuthErrorCodes.INVALID_REFRESH_TOKEN,
+    });
+  }
+
+  const should_generate_new_refresh_token = payload.exp - Date.now() <= ONE_DAY_IN_MILLISECONDS;
+
+  const new_refresh_token = should_generate_new_refresh_token
+    ? generateJwtToken(
+        {
+          sub: payload.sub,
+          iat: Date.now(),
+          exp: sevenDaysFromNow().getTime(),
+          jti: crypto.randomUUID(),
+          type: JwtTokenType.REFRESH,
+          aud: "user",
+        },
+        RefreshTokenSignOptions
+      )
+    : undefined;
+
+  const new_access_token = generateJwtToken({
+    sub: payload.sub,
+    iat: Date.now(),
+    exp: oneHourFromNow().getTime(),
+    jti: crypto.randomUUID(),
+    type: JwtTokenType.ACCESS,
+    aud: "user",
+  });
+
+  if (new_refresh_token) {
+    res.cookie("refresh_token", new_refresh_token, getRefreshTokenCookieOptions());
+  }
+
+  res.status(OK).cookie("access_token", new_access_token, getAccessTokenCookieOptions()).json({
+    message: "Successfully refreshed tokens",
   });
 };

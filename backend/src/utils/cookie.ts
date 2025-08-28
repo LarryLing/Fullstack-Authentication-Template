@@ -13,14 +13,14 @@ const defaults: CookieOptions = {
   secure,
 };
 
-const getAccessCookieOptions = (): CookieOptions => {
+export const getAccessTokenCookieOptions = (): CookieOptions => {
   return {
     ...defaults,
     expires: oneHourFromNow(),
   };
 };
 
-const getRefreshCookieOptions = (): CookieOptions => {
+export const getRefreshTokenCookieOptions = (): CookieOptions => {
   return {
     ...defaults,
     expires: sevenDaysFromNow(),
@@ -30,8 +30,8 @@ const getRefreshCookieOptions = (): CookieOptions => {
 
 export const setAuthCookies = (res: Response, access_token: string, refresh_token: string): void => {
   res
-    .cookie("access_token", access_token, getAccessCookieOptions())
-    .cookie("refresh_token", refresh_token, getRefreshCookieOptions());
+    .cookie("access_token", access_token, getAccessTokenCookieOptions())
+    .cookie("refresh_token", refresh_token, getRefreshTokenCookieOptions());
 };
 
 export const clearAuthCookies = (res: Response): void => {

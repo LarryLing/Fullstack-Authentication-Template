@@ -8,6 +8,7 @@ import {
   resetPassword,
   signup,
   requestEmailVerification,
+  refresh,
 } from "../controllers/auth.controller.js";
 
 const router = Router();
@@ -19,5 +20,6 @@ router.post("/login", login);
 router.post("/password-reset", requestPasswordReset);
 router.patch("/password", resetPassword);
 router.post("/logout", logout);
+router.post("/refresh", refresh);
 
 export default router;

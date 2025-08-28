@@ -48,17 +48,14 @@ export const generateJwtToken = (payload: TokenPayload, options?: SignOptionsAnd
   });
 };
 
-export const verifyJwtToken = <TPayload extends object = TokenPayload>(
-  token: string,
-  options?: VerifyOptionsAndSecret
-) => {
+export const verifyJwtToken = (token: string, options?: VerifyOptionsAndSecret) => {
   const { secret = ACCESS_TOKEN_SECRET, ...verifyOptions } = options || {};
 
   try {
     const payload = jwt.verify(token, secret, {
       ...defaultVerifyOptions,
       ...verifyOptions,
-    }) as TPayload;
+    }) as TokenPayload;
 
     return {
       payload,

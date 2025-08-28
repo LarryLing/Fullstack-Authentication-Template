@@ -5,6 +5,7 @@ import path from "path";
 
 import "./env-loader.js";
 import config from "./config/index.js";
+import { OK } from "./constants/http.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import { checkConnection, disconnectFromDatabase } from "./services/db.js";
@@ -32,6 +33,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
+
+app.get("/api/health", (_, res) => {
+  return res.status(OK).json({
+    status: "healthy",
+  });
+});
 
 app.use("/api/auth", authRoutes);
 
