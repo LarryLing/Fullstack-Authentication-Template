@@ -7,6 +7,5 @@ export interface User extends RowDataPacket {
   first_name: string;
   last_name: string;
   created_at: number;
-  verified_at: null | number;
   last_logged_in_at: null | number;
 }
