@@ -15,7 +15,6 @@ import {
 } from "../utils/cookie.js";
 import { tenMinutesFromNow, ONE_DAY_IN_MILLISECONDS } from "../utils/date.js";
 import { generateJwtToken, JwtTokenType, RefreshTokenSignOptions, verifyJwtToken } from "../utils/jwt.js";
-import { generateVerificationCode } from "../utils/verification-code.js";
 
 export const me = async (req: Request, res: Response) => {
   const { user_id } = req;
@@ -62,10 +61,10 @@ export const email = async (req: Request<unknown, unknown, Pick<User, "email">>,
 };
 
 export const signup = async (
-  req: Request<unknown, unknown, Pick<User, "first_name" | "last_name" | "email">>,
+  req: Request<unknown, unknown, Pick<User, "first_name" | "last_name" | "password" | "email">>,
   res: Response
 ): Promise<void> => {
-  const { first_name, last_name, email } = req.body;
+  const { first_name, last_name, password, email } = req.body;
 
   const [user] = await db.query<User[]>("SELECT * FROM users WHERE email = ?", [email]);
 
@@ -78,34 +77,34 @@ export const signup = async (
   }
 
   const user_id = user[0] ? user[0].id : crypto.randomUUID();
-
+  const hashed_password = await hashPassword(password);
   await db.query(
-    "INSERT INTO users (id, first_name, last_name, email, created_at) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE first_name = VALUES(first_name), last_name = VALUES(last_name)",
-    [user_id, first_name, last_name, email, Date.now()]
+    "INSERT INTO users (id, first_name, last_name, email, password, created_at) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE first_name = VALUES(first_name), last_name = VALUES(last_name), password = VALUES(password)",
+    [user_id, first_name, last_name, email, hashed_password, Date.now()]
   );
 
   const [codes] = await db.query<VerificationCode[]>(
     "SELECT * FROM verification_codes WHERE user_id = ? AND type = ? AND expires_at > ?",
-    [user_id, VerificationCodeTypes.EMAIL_CONFIRMATION, Date.now()]
+    [user_id, VerificationCodeTypes.SIGNUP, Date.now()]
   );
 
   if (codes.length > 0) {
     throw new AuthError({
-      message: "A verification code has already been sent to this email, please check your inbox",
+      message: "A verification code has recently been sent to this email, please check your inbox",
       status: CONFLICT,
       code: AuthErrorCodes.TOO_MANY_REQUESTS,
     });
   }
 
-  const verification_code = generateVerificationCode();
+  const verification_code = crypto.randomUUID();
   const verification_code_issued_at = Date.now();
   const verification_code_expires_at = tenMinutesFromNow().getTime();
-  await db.query("INSERT INTO verification_codes (user_id, issued_at, expires_at, code, type) VALUES (?, ?, ?, ?, ?)", [
+  await db.query("INSERT INTO verification_codes (id, user_id, issued_at, expires_at, type) VALUES (?, ?, ?, ?, ?)", [
+    verification_code,
     user_id,
     verification_code_issued_at,
     verification_code_expires_at,
-    verification_code,
-    VerificationCodeTypes.EMAIL_CONFIRMATION,
+    VerificationCodeTypes.SIGNUP,
   ]);
 
   // TODO: Send email to user
@@ -115,33 +114,12 @@ export const signup = async (
   });
 };
 
-export const confirmEmail = async (
-  req: Request<unknown, unknown, Pick<User, "email" | "password"> & Pick<VerificationCode, "code">>,
-  res: Response
-): Promise<void> => {
-  const { email, password, code } = req.body;
-
-  const [user] = await db.query<User[]>("SELECT * FROM users WHERE email = ?", [email]);
-
-  if (!user[0]) {
-    throw new AuthError({
-      message: "An account with this email does not exist, please sign up",
-      status: NOT_FOUND,
-      code: AuthErrorCodes.USER_NOT_FOUND,
-    });
-  }
-
-  if (user[0].verified_at !== null || user[0].password !== null) {
-    throw new AuthError({
-      message: "An account with this email already exists, please login",
-      status: CONFLICT,
-      code: AuthErrorCodes.USER_ALREADY_EXISTS,
-    });
-  }
+export const confirmSignup = async (req: Request<{ code: string }, unknown, unknown>, res: Response): Promise<void> => {
+  const { code } = req.params;
 
   const [verification_code] = await db.query<VerificationCode[]>(
-    "SELECT * FROM verification_codes WHERE user_id = ? AND code = ? AND type = ? AND expires_at > ?",
-    [user[0].id, code, VerificationCodeTypes.EMAIL_CONFIRMATION, Date.now()]
+    "SELECT * FROM verification_codes WHERE id = ? AND type = ? AND expires_at > ?",
+    [code, VerificationCodeTypes.SIGNUP, Date.now()]
   );
 
   if (!verification_code[0]) {
@@ -153,22 +131,16 @@ export const confirmEmail = async (
   }
 
   await db.query("DELETE FROM verification_codes WHERE user_id = ? AND type = ?", [
-    user[0].id,
-    VerificationCodeTypes.EMAIL_CONFIRMATION,
+    verification_code[0].user_id,
+    VerificationCodeTypes.SIGNUP,
   ]);
 
-  const hashed_password = await hashPassword(password);
   const now = Date.now();
-  await db.query("UPDATE users SET password = ?, verified_at = ?, last_logged_in_at = ? WHERE id = ?", [
-    hashed_password,
-    now,
-    now,
-    user[0].id,
-  ]);
+  await db.query("UPDATE users SET verified_at = ? WHERE id = ?", [now, verification_code[0].user_id]);
 
   const refresh_token = generateJwtToken(
     {
-      sub: user[0].id,
+      sub: verification_code[0].user_id,
       iat: now,
       jti: crypto.randomUUID(),
       type: JwtTokenType.REFRESH,
@@ -177,7 +149,7 @@ export const confirmEmail = async (
   );
 
   const access_token = generateJwtToken({
-    sub: user[0].id,
+    sub: verification_code[0].user_id,
     iat: now,
     jti: crypto.randomUUID(),
     type: JwtTokenType.ACCESS,
@@ -271,14 +243,14 @@ export const forgotPassword = async (
     });
   }
 
-  const reset_password_code = generateVerificationCode();
+  const reset_password_code = crypto.randomUUID();
   const reset_password_code_issued_at = Date.now();
   const reset_password_code_expires_at = tenMinutesFromNow().getTime();
-  await db.query("INSERT INTO verification_codes (user_id, issued_at, expires_at, code, type) VALUES (?, ?, ?, ?, ?)", [
+  await db.query("INSERT INTO verification_codes (id, user_id, issued_at, expires_at, type) VALUES (?, ?, ?, ?, ?)", [
+    reset_password_code,
     user[0].id,
     reset_password_code_issued_at,
     reset_password_code_expires_at,
-    reset_password_code,
     VerificationCodeTypes.PASSWORD_RESET,
   ]);
 
@@ -289,11 +261,40 @@ export const forgotPassword = async (
   });
 };
 
-export const resetPassword = async (
-  req: Request<unknown, unknown, Pick<User, "email" | "password"> & Pick<VerificationCode, "code">>,
+export const confirmForgotPassword = async (
+  req: Request<{ code: string }, unknown, unknown>,
   res: Response
 ): Promise<void> => {
-  const { email, password, code } = req.body;
+  const { code } = req.params;
+
+  const [verification_code] = await db.query<VerificationCode[]>(
+    "SELECT * FROM verification_codes WHERE id = ? AND type = ? AND expires_at > ?",
+    [code, VerificationCodeTypes.PASSWORD_RESET, Date.now()]
+  );
+
+  if (!verification_code[0]) {
+    throw new AuthError({
+      message: "The provided verification code is invalid or has expired, please request a new one",
+      status: BAD_REQUEST,
+      code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
+    });
+  }
+
+  await db.query("DELETE FROM verification_codes WHERE user_id = ? AND type = ?", [
+    verification_code[0].user_id,
+    VerificationCodeTypes.PASSWORD_RESET,
+  ]);
+
+  res.status(OK).json({
+    message: "Password reset code confirmed",
+  });
+};
+
+export const resetPassword = async (
+  req: Request<unknown, unknown, Pick<User, "email" | "password">>,
+  res: Response
+): Promise<void> => {
+  const { email, password } = req.body;
 
   const [user] = await db.query<User[]>("SELECT * FROM users WHERE email = ?", [email]);
 
@@ -304,24 +305,6 @@ export const resetPassword = async (
       code: AuthErrorCodes.USER_NOT_FOUND,
     });
   }
-
-  const [verification_code] = await db.query<VerificationCode[]>(
-    "SELECT * FROM verification_codes WHERE user_id = ? AND code = ? AND type = ? AND expires_at > ?",
-    [user[0].id, code, VerificationCodeTypes.PASSWORD_RESET, Date.now()]
-  );
-
-  if (!verification_code[0]) {
-    throw new AuthError({
-      message: "The provided reset password code is invalid or has expired, please request a new one",
-      status: BAD_REQUEST,
-      code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
-    });
-  }
-
-  await db.query("DELETE FROM verification_codes WHERE user_id = ? AND type = ?", [
-    user[0].id,
-    VerificationCodeTypes.PASSWORD_RESET,
-  ]);
 
   const hashed_password = await hashPassword(password);
   await db.query("UPDATE users SET password = ? WHERE id = ?", [hashed_password, user[0].id]);

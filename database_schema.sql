@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS verification_codes (
   issued_at BIGINT NOT NULL,
   expires_at BIGINT NOT NULL,
   code VARCHAR(10) NOT NULL,
-  type ENUM('email_confirmation', 'password_reset') NOT NULL,
+  type ENUM('signup', 'password_reset') NOT NULL,
   PRIMARY KEY (user_id, code, type),
   INDEX idx_user_id_type (user_id, type),
   INDEX idx_expires_at (expires_at),
