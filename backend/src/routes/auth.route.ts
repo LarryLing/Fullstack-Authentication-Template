@@ -1,23 +1,28 @@
 import { Router } from "express";
 
 import {
-  confirmUser,
   email,
-  forgotPassword,
   login,
   logout,
   resetPassword,
   signup,
-} from "../controllers/auth-controller.js";
+  refresh,
+  confirmEmail,
+  forgotPassword,
+  me,
+} from "../controllers/auth.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+router.get("/me", authenticate, me);
 router.get("/email", email);
-router.post("/login", login);
 router.post("/signup", signup);
-router.post("/confirm-user", confirmUser);
+router.post("/confirm-email", confirmEmail);
+router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
 router.patch("/reset-password", resetPassword);
 router.post("/logout", logout);
+router.post("/refresh", refresh);
 
 export default router;

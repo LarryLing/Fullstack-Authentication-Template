@@ -21,5 +21,12 @@ export default tseslint.config([
       globals: globals.browser,
     },
   },
-  perfectionist.configs["recommended-natural"],
+  {
+    plugins: {
+      perfectionist: perfectionist,
+    },
+    rules: {
+      "perfectionist/sort-imports": "error",
+    },
+  },
 ]);
