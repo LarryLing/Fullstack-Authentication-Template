@@ -9,10 +9,13 @@ import {
   refresh,
   confirmEmail,
   forgotPassword,
+  me,
 } from "../controllers/auth.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
+router.get("/me", authenticate, me);
 router.get("/email", email);
 router.post("/signup", signup);
 router.post("/confirm-email", confirmEmail);

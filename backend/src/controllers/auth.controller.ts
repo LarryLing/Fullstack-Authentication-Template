@@ -17,6 +17,32 @@ import { tenMinutesFromNow, ONE_DAY_IN_MILLISECONDS } from "../utils/date.js";
 import { generateJwtToken, JwtTokenType, RefreshTokenSignOptions, verifyJwtToken } from "../utils/jwt.js";
 import { generateVerificationCode } from "../utils/verification-code.js";
 
+export const me = async (req: Request, res: Response) => {
+  const { user_id } = req;
+
+  const [user] = await db.query<User[]>("SELECT * FROM users WHERE id = ?", [user_id]);
+
+  if (!user[0]) {
+    throw new AuthError({
+      message: "User not found",
+      status: NOT_FOUND,
+      code: AuthErrorCodes.USER_NOT_FOUND,
+    });
+  }
+
+  res.status(OK).json({
+    message: "User successfully retrieved",
+    data: {
+      user: {
+        id: user[0].id,
+        email: user[0].email,
+        first_name: user[0].first_name,
+        last_name: user[0].last_name,
+      },
+    },
+  });
+};
+
 export const email = async (req: Request<unknown, unknown, Pick<User, "email">>, res: Response): Promise<void> => {
   const { email } = req.body;
 
@@ -160,10 +186,6 @@ export const confirmEmail = async (
   setAuthCookies(res, access_token, refresh_token);
 
   res.status(OK).json({
-    message: "User successfully created",
-  });
-
-  res.status(OK).json({
     message: "Email verified successfully",
   });
 };
@@ -217,14 +239,6 @@ export const login = async (
 
   res.status(OK).json({
     message: "Successfully logged in",
-    data: {
-      user: {
-        id: user[0].id,
-        email: user[0].email,
-        first_name: user[0].first_name,
-        last_name: user[0].last_name,
-      },
-    },
   });
 };
 
