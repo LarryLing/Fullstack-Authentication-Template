@@ -1,43 +1,17 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { authSchema } from "../schemas/auth.schema";
-
-const signUpFormSchema = authSchema.pick({
-  firstName: true,
-  lastName: true,
-});
-
-type SignUpFormType = z.infer<typeof signUpFormSchema>;
+import { useSignUpForm } from "../hooks/use-signup-form";
 
 export const SignUpForm = () => {
   const router = useRouter();
 
-  const form = useForm<SignUpFormType>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-    },
-    // @ts-expect-error - zodResolver is not typed correctly
-    resolver: zodResolver(signUpFormSchema),
-  });
+  const { form, onSubmit } = useSignUpForm();
 
-  function onSubmit(values: SignUpFormType) {
-    try {
-      console.log(values);
-      toast.success("Form submitted successfully");
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
-  }
+  const { handleSubmit, control } = form;
 
   const handleBack = () => {
     router.history.back();
@@ -45,9 +19,9 @@ export const SignUpForm = () => {
 
   return (
     <Form {...form}>
-      <form className="flex flex-col items-center gap-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex flex-col items-center gap-y-5" onSubmit={handleSubmit(onSubmit)}>
         <FormField
-          control={form.control}
+          control={control}
           name="firstName"
           render={({ field }) => (
             <FormItem className="w-full">
@@ -60,7 +34,7 @@ export const SignUpForm = () => {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="lastName"
           render={({ field }) => (
             <FormItem className="w-full">

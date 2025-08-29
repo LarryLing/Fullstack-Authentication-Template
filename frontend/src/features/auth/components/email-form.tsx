@@ -1,44 +1,19 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { authSchema } from "../schemas/auth.schema";
-
-const emailFormSchema = authSchema.pick({
-  email: true,
-});
-
-type EmailFormType = z.infer<typeof emailFormSchema>;
+import { useEmailForm } from "../hooks/use-email.form";
 
 export const EmailForm = () => {
-  const form = useForm<EmailFormType>({
-    defaultValues: {
-      email: "",
-    },
-    // @ts-expect-error - zodResolver is not typed correctly
-    resolver: zodResolver(emailFormSchema),
-  });
+  const { form, onSubmit } = useEmailForm();
 
-  function onSubmit(values: EmailFormType) {
-    try {
-      console.log(values);
-      toast.success("Form submitted successfully");
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
-  }
+  const { handleSubmit, control } = form;
 
   return (
     <Form {...form}>
-      <form className="flex flex-col items-center gap-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex flex-col items-center gap-y-5" onSubmit={handleSubmit(onSubmit)}>
         <FormField
-          control={form.control}
+          control={control}
           name="email"
           render={({ field }) => (
             <FormItem className="w-full">
@@ -51,7 +26,9 @@ export const EmailForm = () => {
           )}
         />
         <div className="flex flex-row-reverse gap-x-2 w-full">
-          <Button type="submit">Continue</Button>
+          <Button className="w-full" type="submit">
+            Continue
+          </Button>
         </div>
       </form>
     </Form>

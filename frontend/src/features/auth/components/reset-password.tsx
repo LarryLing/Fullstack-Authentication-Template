@@ -1,47 +1,19 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "@tanstack/react-router";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
-import { authSchema } from "../schemas/auth.schema";
-
-const resetPasswordFormSchema = authSchema.pick({
-  passwordResetCode: true,
-  password: true,
-  confirmPassword: true,
-});
-
-type ResetPasswordFormType = z.infer<typeof resetPasswordFormSchema>;
+import { useResetPasswordForm } from "../hooks/use-reset-password-form";
 
 export const ResetPasswordForm = () => {
   const router = useRouter();
 
-  const form = useForm<ResetPasswordFormType>({
-    defaultValues: {
-      passwordResetCode: "",
-      password: "",
-      confirmPassword: "",
-    },
-    // @ts-expect-error - zodResolver is not typed correctly
-    resolver: zodResolver(resetPasswordFormSchema),
-  });
+  const { form, onSubmit } = useResetPasswordForm();
 
-  function onSubmit(values: ResetPasswordFormType) {
-    try {
-      console.log(values);
-      toast.success("Form submitted successfully");
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
-  }
+  const { handleSubmit, control } = form;
 
   const handleBack = () => {
     router.history.back();
@@ -49,9 +21,9 @@ export const ResetPasswordForm = () => {
 
   return (
     <Form {...form}>
-      <form className="flex flex-col items-center gap-y-5" onSubmit={form.handleSubmit(onSubmit)}>
+      <form className="flex flex-col items-center gap-y-5" onSubmit={handleSubmit(onSubmit)}>
         <FormField
-          control={form.control}
+          control={control}
           name="passwordResetCode"
           render={({ field }) => (
             <FormItem className="w-full">
@@ -73,7 +45,7 @@ export const ResetPasswordForm = () => {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="password"
           render={({ field }) => (
             <FormItem className="w-full">
@@ -86,7 +58,7 @@ export const ResetPasswordForm = () => {
           )}
         />
         <FormField
-          control={form.control}
+          control={control}
           name="confirmPassword"
           render={({ field }) => (
             <FormItem className="w-full">
