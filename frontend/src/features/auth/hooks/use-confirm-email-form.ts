@@ -1,9 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 import { authSchema } from "../schemas/auth.schema";
+import { useAuthStore } from "../stores/auth.stores";
 
 const confirmEmailFormSchema = authSchema.pick({
   emailConfirmationCode: true,
@@ -14,6 +17,11 @@ const confirmEmailFormSchema = authSchema.pick({
 type ConfirmEmailFormType = z.infer<typeof confirmEmailFormSchema>;
 
 export const useConfirmEmailForm = () => {
+  const router = useRouter();
+
+  const email = useAuthStore((state) => state.email);
+  const reset = useAuthStore((state) => state.reset);
+
   const form = useForm<ConfirmEmailFormType>({
     defaultValues: {
       emailConfirmationCode: "",
@@ -24,15 +32,31 @@ export const useConfirmEmailForm = () => {
     resolver: zodResolver(confirmEmailFormSchema),
   });
 
+  useEffect(() => {
+    if (!useAuthStore.persist.hasHydrated) return;
+
+    if (!email) {
+      router.navigate({ to: "/email" });
+    }
+  }, [email, router]);
+
   const onSubmit = (values: ConfirmEmailFormType) => {
     try {
-      console.log(values);
-      toast.success("Form submitted successfully");
+      console.log({
+        ...values,
+        email,
+      });
+      reset();
+      router.navigate({ to: "/" });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
   };
 
-  return { form, onSubmit };
+  const handleBack = () => {
+    router.history.back();
+  };
+
+  return { form, onSubmit, handleBack };
 };

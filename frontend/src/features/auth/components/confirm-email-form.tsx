@@ -1,4 +1,3 @@
-import { useRouter } from "@tanstack/react-router";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 import { Button } from "@/components/ui/button";
@@ -9,15 +8,9 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useConfirmEmailForm } from "../hooks/use-confirm-email-form";
 
 export const ConfirmEmailForm = () => {
-  const router = useRouter();
-
-  const { form, onSubmit } = useConfirmEmailForm();
+  const { form, onSubmit, handleBack } = useConfirmEmailForm();
 
   const { handleSubmit, control } = form;
-
-  const handleBack = () => {
-    router.history.back();
-  };
 
   return (
     <Form {...form}>

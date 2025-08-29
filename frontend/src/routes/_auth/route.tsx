@@ -3,10 +3,10 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Card } from "@/components/ui/card";
 
 export const Route = createFileRoute("/_auth")({
-  component: UnauthenticatedLayout,
+  component: AuthenticationLayout,
 });
 
-function UnauthenticatedLayout() {
+function AuthenticationLayout() {
   return (
     <section className="bg-muted h-screen">
       <div className="flex h-full items-center justify-center">

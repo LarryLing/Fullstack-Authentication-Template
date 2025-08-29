@@ -1,5 +1,3 @@
-import { useRouter } from "@tanstack/react-router";
-
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -7,15 +5,9 @@ import { Input } from "@/components/ui/input";
 import { useSignUpForm } from "../hooks/use-signup-form";
 
 export const SignUpForm = () => {
-  const router = useRouter();
-
-  const { form, onSubmit } = useSignUpForm();
+  const { form, onSubmit, handleBack } = useSignUpForm();
 
   const { handleSubmit, control } = form;
-
-  const handleBack = () => {
-    router.history.back();
-  };
 
   return (
     <Form {...form}>

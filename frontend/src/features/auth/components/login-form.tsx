@@ -1,4 +1,4 @@
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -7,15 +7,9 @@ import { Input } from "@/components/ui/input";
 import { useLoginForm } from "../hooks/use-login-form";
 
 export const LoginForm = () => {
-  const router = useRouter();
-
-  const { form, onSubmit } = useLoginForm();
+  const { form, onSubmit, handleBack } = useLoginForm();
 
   const { handleSubmit, control } = form;
-
-  const handleBack = () => {
-    router.history.back();
-  };
 
   return (
     <Form {...form}>

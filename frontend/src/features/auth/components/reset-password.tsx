@@ -1,4 +1,3 @@
-import { useRouter } from "@tanstack/react-router";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 import { Button } from "@/components/ui/button";
@@ -9,15 +8,9 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { useResetPasswordForm } from "../hooks/use-reset-password-form";
 
 export const ResetPasswordForm = () => {
-  const router = useRouter();
-
-  const { form, onSubmit } = useResetPasswordForm();
+  const { form, onSubmit, handleBack } = useResetPasswordForm();
 
   const { handleSubmit, control } = form;
-
-  const handleBack = () => {
-    router.history.back();
-  };
 
   return (
     <Form {...form}>
