@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ConfirmEmailForm } from "@/features/auth/components/confirm-email-form";
 
-export const Route = createFileRoute("/_auth/confirm-email")({
+export const Route = createFileRoute("/auth/confirm-email")({
   component: ConfirmEmail,
 });
 

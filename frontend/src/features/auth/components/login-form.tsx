@@ -21,7 +21,7 @@ export const LoginForm = () => {
             <FormItem className="w-full">
               <div className="flex justify-between">
                 <FormLabel>Password</FormLabel>
-                <Link className="text-sm text-primary hover:underline" to="/reset-password">
+                <Link className="text-sm text-primary hover:underline" to="/auth/reset-password">
                   Forgot password?
                 </Link>
               </div>

@@ -33,7 +33,7 @@ export const useSignUpForm = () => {
     if (!useAuthStore.persist.hasHydrated) return;
 
     if (!email) {
-      router.navigate({ to: "/email" });
+      router.navigate({ to: "/auth/email" });
     }
   }, [email, router]);
 
@@ -43,7 +43,7 @@ export const useSignUpForm = () => {
         ...values,
         email,
       });
-      router.navigate({ to: "/confirm-email" });
+      router.navigate({ to: "/auth/confirm-email" });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");

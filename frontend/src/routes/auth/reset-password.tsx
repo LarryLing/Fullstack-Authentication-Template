@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResetPasswordForm } from "@/features/auth/components/reset-password";
 
-export const Route = createFileRoute("/_auth/reset-password")({
+export const Route = createFileRoute("/auth/reset-password")({
   component: ResetPassword,
 });
 

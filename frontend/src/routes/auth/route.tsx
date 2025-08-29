@@ -2,7 +2,7 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 import { Card } from "@/components/ui/card";
 
-export const Route = createFileRoute("/_auth")({
+export const Route = createFileRoute("/auth")({
   component: AuthenticationLayout,
 });
 

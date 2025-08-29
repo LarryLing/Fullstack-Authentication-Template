@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmailForm } from "@/features/auth/components/email-form";
 
-export const Route = createFileRoute("/_auth/email")({
+export const Route = createFileRoute("/auth/email")({
   component: Email,
 });
 

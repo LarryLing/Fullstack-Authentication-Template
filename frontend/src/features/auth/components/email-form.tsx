@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useEmailForm } from "../hooks/use-email.form";
 
 export const EmailForm = () => {
-  const { form, onSubmit } = useEmailForm();
+  const { form, onSubmit, handleBack } = useEmailForm();
 
   const { handleSubmit, control } = form;
 
@@ -26,8 +26,9 @@ export const EmailForm = () => {
           )}
         />
         <div className="flex flex-row-reverse gap-x-2 w-full">
-          <Button className="w-full" type="submit">
-            Continue
+          <Button type="submit">Continue</Button>
+          <Button variant="outline" type="button" onClick={handleBack}>
+            Back
           </Button>
         </div>
       </form>

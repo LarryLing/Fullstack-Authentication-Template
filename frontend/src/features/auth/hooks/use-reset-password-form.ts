@@ -39,7 +39,7 @@ export const useResetPasswordForm = () => {
         email,
       });
       reset();
-      router.navigate({ to: "/login" });
+      router.navigate({ to: "/auth/login" });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
@@ -50,7 +50,7 @@ export const useResetPasswordForm = () => {
     if (!useAuthStore.persist.hasHydrated) return;
 
     if (!email) {
-      router.navigate({ to: "/email" });
+      router.navigate({ to: "/auth/email" });
     }
   }, [email, router]);
 

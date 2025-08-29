@@ -32,12 +32,16 @@ export const useEmailForm = () => {
         ...values,
       });
       setData(values);
-      router.navigate({ to: "/login" });
+      router.navigate({ to: "/auth/login" });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
   };
 
-  return { form, onSubmit };
+  const handleBack = () => {
+    router.navigate({ to: "/" });
+  };
+
+  return { form, onSubmit, handleBack };
 };

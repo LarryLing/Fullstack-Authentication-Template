@@ -36,7 +36,7 @@ export const useConfirmEmailForm = () => {
     if (!useAuthStore.persist.hasHydrated) return;
 
     if (!email) {
-      router.navigate({ to: "/email" });
+      router.navigate({ to: "/auth/email" });
     }
   }, [email, router]);
 
