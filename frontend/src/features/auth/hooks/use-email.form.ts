@@ -2,19 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
-import { authSchema } from "../schemas/auth.schema";
-import { useAuthStore } from "../stores/auth.stores";
-
-const emailFormSchema = authSchema.pick({
-  email: true,
-});
-
-type EmailFormType = z.infer<typeof emailFormSchema>;
+import { useAuthStore } from "../auth.store";
+import { emailFormSchema, type EmailFormType } from "../schemas/email.schema";
 
 export const useEmailForm = () => {
   const router = useRouter();
+  const { navigate } = router;
 
   const setData = useAuthStore((state) => state.setData);
 
@@ -32,7 +26,7 @@ export const useEmailForm = () => {
         ...values,
       });
       setData(values);
-      router.navigate({ to: "/auth/login" });
+      navigate({ to: "/auth/login" });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
@@ -40,7 +34,7 @@ export const useEmailForm = () => {
   };
 
   const handleBack = () => {
-    router.navigate({ to: "/" });
+    navigate({ to: "/" });
   };
 
   return { form, onSubmit, handleBack };

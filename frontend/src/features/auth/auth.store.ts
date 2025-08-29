@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-import type { AuthType } from "../schemas/auth.schema";
+import type { AuthType } from "./schemas/auth.schema";
 
 type AuthStoreType = Partial<AuthType> & {
   setData: (data: Partial<AuthType>) => void;

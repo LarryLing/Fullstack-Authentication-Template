@@ -3,21 +3,13 @@ import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
-import { authSchema } from "../schemas/auth.schema";
-import { useAuthStore } from "../stores/auth.stores";
-
-const resetPasswordFormSchema = authSchema.pick({
-  passwordResetCode: true,
-  password: true,
-  confirmPassword: true,
-});
-
-type ResetPasswordFormType = z.infer<typeof resetPasswordFormSchema>;
+import { useAuthStore } from "../auth.store";
+import { resetPasswordFormSchema, type ResetPasswordFormType } from "../schemas/reset-password.schema";
 
 export const useResetPasswordForm = () => {
   const router = useRouter();
+  const { navigate, history } = router;
 
   const email = useAuthStore((state) => state.email);
   const reset = useAuthStore((state) => state.reset);
@@ -32,6 +24,14 @@ export const useResetPasswordForm = () => {
     resolver: zodResolver(resetPasswordFormSchema),
   });
 
+  useEffect(() => {
+    if (!useAuthStore.persist.hasHydrated) return;
+
+    if (!email) {
+      navigate({ to: "/auth/email", replace: true });
+    }
+  }, [email, navigate]);
+
   const onSubmit = (values: ResetPasswordFormType) => {
     try {
       console.log({
@@ -39,23 +39,15 @@ export const useResetPasswordForm = () => {
         email,
       });
       reset();
-      router.navigate({ to: "/auth/login" });
+      navigate({ to: "/auth/login", replace: true });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
   };
 
-  useEffect(() => {
-    if (!useAuthStore.persist.hasHydrated) return;
-
-    if (!email) {
-      router.navigate({ to: "/auth/email" });
-    }
-  }, [email, router]);
-
   const handleBack = () => {
-    router.history.back();
+    history.back();
   };
 
   return { form, onSubmit, handleBack };

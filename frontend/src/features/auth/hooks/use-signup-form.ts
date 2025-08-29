@@ -3,20 +3,13 @@ import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
-import { authSchema } from "../schemas/auth.schema";
-import { useAuthStore } from "../stores/auth.stores";
-
-const signUpFormSchema = authSchema.pick({
-  firstName: true,
-  lastName: true,
-});
-
-type SignUpFormType = z.infer<typeof signUpFormSchema>;
+import { useAuthStore } from "../auth.store";
+import { signUpFormSchema, type SignUpFormType } from "../schemas/signup.schema";
 
 export const useSignUpForm = () => {
   const router = useRouter();
+  const { navigate, history } = router;
 
   const email = useAuthStore((state) => state.email);
 
@@ -33,9 +26,9 @@ export const useSignUpForm = () => {
     if (!useAuthStore.persist.hasHydrated) return;
 
     if (!email) {
-      router.navigate({ to: "/auth/email" });
+      navigate({ to: "/auth/email" });
     }
-  }, [email, router]);
+  }, [email, navigate]);
 
   const onSubmit = (values: SignUpFormType) => {
     try {
@@ -43,7 +36,7 @@ export const useSignUpForm = () => {
         ...values,
         email,
       });
-      router.navigate({ to: "/auth/confirm-email" });
+      navigate({ to: "/auth/confirm-email" });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
@@ -51,7 +44,7 @@ export const useSignUpForm = () => {
   };
 
   const handleBack = () => {
-    router.history.back();
+    history.back();
   };
 
   return { form, onSubmit, handleBack };

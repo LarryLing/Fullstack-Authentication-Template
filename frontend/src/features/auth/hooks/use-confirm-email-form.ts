@@ -3,21 +3,13 @@ import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
-import { authSchema } from "../schemas/auth.schema";
-import { useAuthStore } from "../stores/auth.stores";
-
-const confirmEmailFormSchema = authSchema.pick({
-  emailConfirmationCode: true,
-  password: true,
-  confirmPassword: true,
-});
-
-type ConfirmEmailFormType = z.infer<typeof confirmEmailFormSchema>;
+import { useAuthStore } from "../auth.store";
+import { confirmEmailFormSchema, type ConfirmEmailFormType } from "../schemas/confirm-email.schema";
 
 export const useConfirmEmailForm = () => {
   const router = useRouter();
+  const { navigate, history } = router;
 
   const email = useAuthStore((state) => state.email);
   const reset = useAuthStore((state) => state.reset);
@@ -36,9 +28,9 @@ export const useConfirmEmailForm = () => {
     if (!useAuthStore.persist.hasHydrated) return;
 
     if (!email) {
-      router.navigate({ to: "/auth/email" });
+      navigate({ to: "/auth/email" });
     }
-  }, [email, router]);
+  }, [email, navigate]);
 
   const onSubmit = (values: ConfirmEmailFormType) => {
     try {
@@ -47,7 +39,7 @@ export const useConfirmEmailForm = () => {
         email,
       });
       reset();
-      router.navigate({ to: "/" });
+      navigate({ to: "/", replace: true });
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
@@ -55,7 +47,7 @@ export const useConfirmEmailForm = () => {
   };
 
   const handleBack = () => {
-    router.history.back();
+    history.back();
   };
 
   return { form, onSubmit, handleBack };
