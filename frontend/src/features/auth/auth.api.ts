@@ -1,5 +1,3 @@
-import type { User } from "@/types/user.type";
-
 import axiosClient from "@/config/axios-client";
 
 import type { ForgotPasswordFormType } from "./schemas/forgot-password.schema";
@@ -16,17 +14,13 @@ export const signup = async (data: SignUpFormType) => {
 };
 
 export const confirmSignup = async (code: string) => {
-  return await axiosClient.post(`/auth/signup/confirm/${code}`);
+  return await axiosClient.post(`/auth/confirm-signup/${code}`);
 };
 
 export const forgotPassword = async (data: ForgotPasswordFormType) => {
   return await axiosClient.post("/auth/forgot-password", data);
 };
 
-export const confirmForgotPassword = async (code: string) => {
-  return await axiosClient.post(`/auth/forgot-password/confirm/${code}`);
-};
-
-export const resetPassword = async (data: ResetPasswordFormType & { id: User["id"] }) => {
-  return await axiosClient.patch("/auth/reset-password", data);
+export const resetPassword = async (data: ResetPasswordFormType & { code: string }) => {
+  return await axiosClient.patch(`/auth/reset-password/${data.code}`, data);
 };

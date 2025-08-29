@@ -42,7 +42,7 @@ export const useSignUpForm = () => {
   };
 
   const handleBack = () => {
-   router.history.back();
+    router.history.back();
   };
 
   return { form, onSubmit, handleBack, isPending };

@@ -4,12 +4,10 @@ import { useRouter } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import type { User } from "@/types/user.type";
-
 import { resetPassword } from "../auth.api";
 import { resetPasswordFormSchema, type ResetPasswordFormType } from "../schemas/reset-password.schema";
 
-export const useResetPasswordForm = (userId: User["id"]) => {
+export const useResetPasswordForm = (code: string) => {
   const router = useRouter();
 
   const form = useForm<ResetPasswordFormType>({
@@ -34,10 +32,7 @@ export const useResetPasswordForm = (userId: User["id"]) => {
   });
 
   const onSubmit = async (values: ResetPasswordFormType) => {
-    await resetPasswordMutationAsync({
-      ...values,
-      id: userId,
-    });
+    await resetPasswordMutationAsync({ ...values, code });
   };
 
   const handleBack = () => {

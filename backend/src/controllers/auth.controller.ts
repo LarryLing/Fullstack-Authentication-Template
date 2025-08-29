@@ -245,11 +245,12 @@ export const forgotPassword = async (
   });
 };
 
-export const confirmForgotPassword = async (
-  req: Request<{ code: string }, unknown, unknown>,
+export const resetPassword = async (
+  req: Request<{ code: string }, unknown, Pick<User, "id" | "password">>,
   res: Response
 ): Promise<void> => {
   const { code } = req.params;
+  const { password } = req.body;
 
   const [verification_code] = await db.query<VerificationCode[]>(
     "SELECT * FROM verification_codes WHERE id = ? AND type = ? AND expires_at > ?",
@@ -264,24 +265,7 @@ export const confirmForgotPassword = async (
     });
   }
 
-  await db.query("DELETE FROM verification_codes WHERE user_id = ? AND type = ?", [
-    verification_code[0].user_id,
-    VerificationCodeTypes.PASSWORD_RESET,
-  ]);
-
-  res.status(OK).json({
-    message: "Password reset code confirmed",
-    user_id: verification_code[0].user_id,
-  });
-};
-
-export const resetPassword = async (
-  req: Request<unknown, unknown, Pick<User, "id" | "password">>,
-  res: Response
-): Promise<void> => {
-  const { id, password } = req.body;
-
-  const [user] = await db.query<User[]>("SELECT * FROM users WHERE id = ?", [id]);
+  const [user] = await db.query<User[]>("SELECT * FROM users WHERE id = ?", [verification_code[0].user_id]);
 
   if (!user[0]) {
     throw new AuthError({
@@ -290,6 +274,11 @@ export const resetPassword = async (
       code: AuthErrorCodes.USER_NOT_FOUND,
     });
   }
+
+  await db.query("DELETE FROM verification_codes WHERE user_id = ? AND type = ?", [
+    verification_code[0].user_id,
+    VerificationCodeTypes.PASSWORD_RESET,
+  ]);
 
   const hashed_password = await hashPassword(password);
   await db.query("UPDATE users SET password = ? WHERE id = ?", [hashed_password, user[0].id]);

@@ -1,7 +1,5 @@
 import { Loader2 } from "lucide-react";
 
-import type { User } from "@/types/user.type";
-
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -9,11 +7,11 @@ import { Input } from "@/components/ui/input";
 import { useResetPasswordForm } from "../hooks/use-reset-password-form";
 
 type ResetPasswordFormProps = {
-  userId: User["id"];
+  code: string;
 };
 
-export const ResetPasswordForm = ({ userId }: ResetPasswordFormProps) => {
-  const { form, onSubmit, handleBack, isPending } = useResetPasswordForm(userId);
+export const ResetPasswordForm = ({ code }: ResetPasswordFormProps) => {
+  const { form, onSubmit, handleBack, isPending } = useResetPasswordForm(code);
 
   const { handleSubmit, control } = form;
 
