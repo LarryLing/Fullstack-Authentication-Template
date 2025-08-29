@@ -8,6 +8,9 @@ export const enum JwtTokenType {
 }
 
 export type TokenPayload = JwtPayload & {
+  sub: string;
+  iat: number;
+  jti: string;
   type: JwtTokenType;
 };
 
@@ -37,7 +40,7 @@ export const RefreshTokenSignOptions: SignOptionsAndSecret = {
   secret: REFRESH_TOKEN_SECRET,
 };
 
-export const generateJwtToken = (payload: JwtPayload, options?: SignOptionsAndSecret) => {
+export const generateJwtToken = (payload: TokenPayload, options?: SignOptionsAndSecret) => {
   const { secret, ...signOptions } = options || AccessTokenSignOptions;
 
   return jwt.sign(payload, secret, {

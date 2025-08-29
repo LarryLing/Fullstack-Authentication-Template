@@ -67,7 +67,7 @@ export const signup = async (
     throw new AuthError({
       message: "A verification code has already been sent to this email, please check your inbox",
       status: CONFLICT,
-      code: AuthErrorCodes.VERIFICATION_CODE_ALREADY_SENT,
+      code: AuthErrorCodes.TOO_MANY_REQUESTS,
     });
   }
 
@@ -253,7 +253,7 @@ export const forgotPassword = async (
     throw new AuthError({
       message: "A verification code has already been sent to this email, please check your inbox",
       status: CONFLICT,
-      code: AuthErrorCodes.VERIFICATION_CODE_ALREADY_SENT,
+      code: AuthErrorCodes.TOO_MANY_REQUESTS,
     });
   }
 
@@ -311,6 +311,8 @@ export const resetPassword = async (
 
   const hashed_password = await hashPassword(password);
   await db.query("UPDATE users SET password = ? WHERE id = ?", [hashed_password, user[0].id]);
+
+  clearAuthCookies(res);
 
   res.status(OK).json({
     message: "Password reset successfully, please login with your new password",
