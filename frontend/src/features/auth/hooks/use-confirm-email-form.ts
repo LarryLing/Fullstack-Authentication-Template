@@ -1,9 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { confirmEmail } from "../auth.api";
 import { useAuthStore } from "../auth.store";
 import { confirmEmailFormSchema, type ConfirmEmailFormType } from "../schemas/confirm-email.schema";
 
@@ -32,23 +34,31 @@ export const useConfirmEmailForm = () => {
     }
   }, [email, navigate]);
 
-  const onSubmit = (values: ConfirmEmailFormType) => {
-    try {
-      console.log({
-        ...values,
-        email,
-      });
+  const { mutateAsync: confirmEmailMutationAsync, isPending } = useMutation({
+    mutationFn: confirmEmail,
+    onSuccess: () => {
       reset();
-      navigate({ to: "/", replace: true });
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
+      navigate({ to: "/" });
+    },
+    onError: (error) => {
+      toast.error("Failed to confirm email. Please try again.", {
+        description: error.message,
+      });
+    },
+  });
+
+  const onSubmit = async (values: ConfirmEmailFormType) => {
+    if (!email) return;
+
+    await confirmEmailMutationAsync({
+      ...values,
+      email,
+    });
   };
 
   const handleBack = () => {
     history.back();
   };
 
-  return { form, onSubmit, handleBack };
+  return { form, onSubmit, handleBack, isPending };
 };

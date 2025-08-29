@@ -1,3 +1,5 @@
+import { Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -5,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useEmailForm } from "../hooks/use-email.form";
 
 export const EmailForm = () => {
-  const { form, onSubmit, handleBack } = useEmailForm();
+  const { form, onSubmit, handleBack, isPending } = useEmailForm();
 
   const { handleSubmit, control } = form;
 
@@ -19,15 +21,17 @@ export const EmailForm = () => {
             <FormItem className="w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="m@example.com" {...field} />
+                <Input placeholder="m@example.com" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex flex-row-reverse gap-x-2 w-full">
-          <Button type="submit">Continue</Button>
-          <Button variant="outline" type="button" onClick={handleBack}>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Continue"}
+          </Button>
+          <Button variant="outline" type="button" onClick={handleBack} disabled={isPending}>
             Back
           </Button>
         </div>

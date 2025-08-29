@@ -1,9 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { signup } from "../auth.api";
 import { useAuthStore } from "../auth.store";
 import { signUpFormSchema, type SignUpFormType } from "../schemas/signup.schema";
 
@@ -30,22 +32,30 @@ export const useSignUpForm = () => {
     }
   }, [email, navigate]);
 
-  const onSubmit = (values: SignUpFormType) => {
-    try {
-      console.log({
-        ...values,
-        email,
-      });
+  const { mutateAsync: signupMutationAsync, isPending } = useMutation({
+    mutationFn: signup,
+    onSuccess: () => {
       navigate({ to: "/auth/confirm-email" });
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
+    },
+    onError: (error) => {
+      toast.error("Failed to signup. Please try again.", {
+        description: error.message,
+      });
+    },
+  });
+
+  const onSubmit = async (values: SignUpFormType) => {
+    if (!email) return;
+
+    await signupMutationAsync({
+      ...values,
+      email,
+    });
   };
 
   const handleBack = () => {
     history.back();
   };
 
-  return { form, onSubmit, handleBack };
+  return { form, onSubmit, handleBack, isPending };
 };

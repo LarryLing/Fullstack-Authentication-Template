@@ -1,9 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { resetPassword } from "../auth.api";
 import { useAuthStore } from "../auth.store";
 import { resetPasswordFormSchema, type ResetPasswordFormType } from "../schemas/reset-password.schema";
 
@@ -32,23 +34,31 @@ export const useResetPasswordForm = () => {
     }
   }, [email, navigate]);
 
-  const onSubmit = (values: ResetPasswordFormType) => {
-    try {
-      console.log({
-        ...values,
-        email,
-      });
+  const { mutateAsync: resetPasswordMutationAsync, isPending } = useMutation({
+    mutationFn: resetPassword,
+    onSuccess: () => {
       reset();
       navigate({ to: "/auth/login", replace: true });
-    } catch (error) {
-      console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
-    }
+    },
+    onError: (error) => {
+      toast.error("Failed to reset password. Please try again.", {
+        description: error.message,
+      });
+    },
+  });
+
+  const onSubmit = async (values: ResetPasswordFormType) => {
+    if (!email) return;
+
+    await resetPasswordMutationAsync({
+      ...values,
+      email,
+    });
   };
 
   const handleBack = () => {
     history.back();
   };
 
-  return { form, onSubmit, handleBack };
+  return { form, onSubmit, handleBack, isPending };
 };

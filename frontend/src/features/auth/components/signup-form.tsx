@@ -1,3 +1,5 @@
+import { Loader2 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -5,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useSignUpForm } from "../hooks/use-signup-form";
 
 export const SignUpForm = () => {
-  const { form, onSubmit, handleBack } = useSignUpForm();
+  const { form, onSubmit, handleBack, isPending } = useSignUpForm();
 
   const { handleSubmit, control } = form;
 
@@ -19,7 +21,7 @@ export const SignUpForm = () => {
             <FormItem className="w-full">
               <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input placeholder="John" {...field} />
+                <Input placeholder="John" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -32,15 +34,17 @@ export const SignUpForm = () => {
             <FormItem className="w-full">
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input placeholder="Doe" {...field} />
+                <Input placeholder="Doe" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex flex-row-reverse gap-x-2 w-full">
-          <Button type="submit">Sign Up</Button>
-          <Button variant="outline" type="button" onClick={handleBack}>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
+          </Button>
+          <Button variant="outline" type="button" onClick={handleBack} disabled={isPending}>
             Back
           </Button>
         </div>
