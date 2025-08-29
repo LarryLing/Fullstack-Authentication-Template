@@ -4,7 +4,7 @@ import express from "express";
 import path from "path";
 
 import "./env-loader.js";
-import config from "./config/index.js";
+import { NODE_ENV, PORT, WHITELISTED_ORIGIN } from "./constants/env.js";
 import { OK } from "./constants/http.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
@@ -12,10 +12,10 @@ import { checkConnection, disconnectFromDatabase } from "./services/db.js";
 
 const app = express();
 
-if (config.NODE_ENV === "development") {
+if (NODE_ENV === "development") {
   const corsOptions: CorsOptions = {
     origin(origin, callback) {
-      if (!origin || config.WHITELISTED_ORIGIN === origin) {
+      if (!origin || WHITELISTED_ORIGIN === origin) {
         callback(null, true);
       } else {
         callback(new Error(`CORS error: ${origin} is not allowed by CORS`), false);
@@ -44,7 +44,7 @@ app.use("/api/auth", authRoutes);
 
 app.use(errorMiddleware);
 
-if (config.NODE_ENV === "production") {
+if (NODE_ENV === "production") {
   const __dirname = path.resolve();
 
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
@@ -54,8 +54,8 @@ if (config.NODE_ENV === "production") {
   });
 }
 
-app.listen(config.PORT, async () => {
-  console.log(`Server running on port ${config.PORT} in ${config.NODE_ENV} mode`);
+app.listen(PORT, async () => {
+  console.log(`Server running on port ${PORT} in ${NODE_ENV} mode`);
   await checkConnection();
 });
 

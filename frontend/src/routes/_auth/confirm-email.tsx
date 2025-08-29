@@ -11,7 +11,7 @@ function ConfirmEmail() {
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Confirm your email</CardTitle>
+        <CardTitle className="text-xl font-semibold">Almost there!</CardTitle>
         <CardDescription>Enter the code we sent to your email to finish creating your account.</CardDescription>
       </CardHeader>
       <CardContent>

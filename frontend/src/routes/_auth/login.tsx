@@ -11,7 +11,7 @@ function Login() {
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Login to your account</CardTitle>
+        <CardTitle className="text-xl font-semibold">Welcome back!</CardTitle>
         <CardDescription>Enter your password to finish logging in.</CardDescription>
       </CardHeader>
       <CardContent>

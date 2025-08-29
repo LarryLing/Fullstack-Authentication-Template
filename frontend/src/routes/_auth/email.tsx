@@ -11,7 +11,7 @@ function Email() {
   return (
     <>
       <CardHeader>
-        <CardTitle className="text-xl font-semibold">Login to your account</CardTitle>
+        <CardTitle className="text-xl font-semibold">Let's get started!</CardTitle>
         <CardDescription>Enter your email to continue.</CardDescription>
       </CardHeader>
       <CardContent>

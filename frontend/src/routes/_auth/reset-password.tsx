@@ -12,7 +12,7 @@ function ResetPassword() {
     <>
       <CardHeader>
         <CardTitle className="text-xl font-semibold">Forgot your password?</CardTitle>
-        <CardDescription>Enter the code we sent to your email to reset your password.</CardDescription>
+        <CardDescription>No worries! Enter the code we sent to your email to reset your password.</CardDescription>
       </CardHeader>
       <CardContent>
         <ResetPasswordForm />

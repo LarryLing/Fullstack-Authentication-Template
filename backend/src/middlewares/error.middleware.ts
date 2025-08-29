@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 
-import config from "../config/index.js";
+import { DEBUG } from "../constants/env.js";
 import GenericError from "../errors/generic-error.js";
 import { clearAuthCookies, REFRESH_COOKIE_PATH } from "../utils/cookie.js";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorMiddleware = (error: unknown, req: Request, res: Response, _next: NextFunction) => {
-  if (config.DEBUG === "true") {
+  if (DEBUG === "true") {
     console.error(error);
   }
 
