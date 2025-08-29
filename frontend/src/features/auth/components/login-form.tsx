@@ -17,12 +17,25 @@ export const LoginForm = () => {
       <form className="flex flex-col items-center gap-y-5" onSubmit={handleSubmit(onSubmit)}>
         <FormField
           control={control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="m@example.com" {...field} disabled={isPending} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
           name="password"
           render={({ field }) => (
             <FormItem className="w-full">
               <div className="flex justify-between">
                 <FormLabel>Password</FormLabel>
-                <Link className="text-sm text-primary hover:underline" to="/auth/reset-password" disabled={isPending}>
+                <Link to="/auth/forgot-password" className="text-sm text-primary hover:underline cursor-default">
                   Forgot password?
                 </Link>
               </div>

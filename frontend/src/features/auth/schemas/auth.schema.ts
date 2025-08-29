@@ -19,8 +19,6 @@ export const authSchema = z
         message: "Password must contain at least one special character",
       }),
     confirmPassword: z.string().min(8),
-    emailConfirmationCode: z.string().min(6),
-    passwordResetCode: z.string().min(6),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

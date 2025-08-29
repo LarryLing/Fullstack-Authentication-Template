@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useEmailForm } from "../hooks/use-email.form";
+import { useForgotPasswordForm } from "../hooks/use-forgot-password.form";
 
-export const EmailForm = () => {
-  const { form, onSubmit, handleBack, isPending } = useEmailForm();
+export const ForgotPasswordForm = () => {
+  const { form, onSubmit, handleBack, isPending } = useForgotPasswordForm();
 
   const { handleSubmit, control } = form;
 

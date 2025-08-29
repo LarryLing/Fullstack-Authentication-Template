@@ -42,24 +42,6 @@ export const me = async (req: Request, res: Response) => {
   });
 };
 
-export const email = async (req: Request<unknown, unknown, Pick<User, "email">>, res: Response): Promise<void> => {
-  const { email } = req.body;
-
-  const [user] = await db.query<User[]>("SELECT * FROM users WHERE email = ?", [email]);
-
-  if (!user[0] || user[0].verified_at === null) {
-    throw new AuthError({
-      message: "An account with this email does not exist, please sign up",
-      status: NOT_FOUND,
-      code: AuthErrorCodes.USER_NOT_FOUND,
-    });
-  }
-
-  res.status(OK).json({
-    message: "A verified account with this email was found, please login",
-  });
-};
-
 export const signup = async (
   req: Request<unknown, unknown, Pick<User, "first_name" | "last_name" | "password" | "email">>,
   res: Response
@@ -108,6 +90,7 @@ export const signup = async (
   ]);
 
   // TODO: Send email to user
+  // https://<FRONTEND_URL>/auth/signup/confirm?code=<VERIFICATION_CODE>
 
   res.status(CREATED).json({
     message: "Please check your email for a verification code",
@@ -237,7 +220,7 @@ export const forgotPassword = async (
 
   if (codes.length > 0) {
     throw new AuthError({
-      message: "A verification code has already been sent to this email, please check your inbox",
+      message: "A verification code has recently been sent to this email, please check your inbox",
       status: CONFLICT,
       code: AuthErrorCodes.TOO_MANY_REQUESTS,
     });
@@ -255,6 +238,7 @@ export const forgotPassword = async (
   ]);
 
   // TODO: Send email to user
+  // https://<FRONTEND_URL>/auth/reset-password/confirm?code=<VERIFICATION_CODE>
 
   res.status(OK).json({
     message: "Reset password email sent",
@@ -287,20 +271,21 @@ export const confirmForgotPassword = async (
 
   res.status(OK).json({
     message: "Password reset code confirmed",
+    user_id: verification_code[0].user_id,
   });
 };
 
 export const resetPassword = async (
-  req: Request<unknown, unknown, Pick<User, "email" | "password">>,
+  req: Request<unknown, unknown, Pick<User, "id" | "password">>,
   res: Response
 ): Promise<void> => {
-  const { email, password } = req.body;
+  const { id, password } = req.body;
 
-  const [user] = await db.query<User[]>("SELECT * FROM users WHERE email = ?", [email]);
+  const [user] = await db.query<User[]>("SELECT * FROM users WHERE id = ?", [id]);
 
   if (!user[0]) {
     throw new AuthError({
-      message: "An account with this email does not exist, please sign up",
+      message: "Could not find user with the provided id. Please sign up.",
       status: NOT_FOUND,
       code: AuthErrorCodes.USER_NOT_FOUND,
     });

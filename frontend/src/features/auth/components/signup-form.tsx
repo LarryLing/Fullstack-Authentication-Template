@@ -16,6 +16,19 @@ export const SignUpForm = () => {
       <form className="flex flex-col items-center gap-y-5" onSubmit={handleSubmit(onSubmit)}>
         <FormField
           control={control}
+          name="email"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="m@example.com" {...field} disabled={isPending} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
           name="firstName"
           render={({ field }) => (
             <FormItem className="w-full">
@@ -35,6 +48,32 @@ export const SignUpForm = () => {
               <FormLabel>Last Name</FormLabel>
               <FormControl>
                 <Input placeholder="Doe" {...field} disabled={isPending} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="password"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input placeholder="••••••••" type="password" {...field} disabled={isPending} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel>Confirm Password</FormLabel>
+              <FormControl>
+                <Input placeholder="••••••••" type="password" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>

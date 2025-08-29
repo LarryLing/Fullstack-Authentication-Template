@@ -12,7 +12,7 @@ function Login() {
     <>
       <CardHeader>
         <CardTitle className="text-xl font-semibold">Welcome back!</CardTitle>
-        <CardDescription>Enter your password to finish logging in.</CardDescription>
+        <CardDescription>Enter your credentials to log in.</CardDescription>
       </CardHeader>
       <CardContent>
         <LoginForm />

@@ -1,43 +1,25 @@
-import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Loader2 } from "lucide-react";
+
+import type { User } from "@/types/user.type";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 import { useResetPasswordForm } from "../hooks/use-reset-password-form";
 
-export const ResetPasswordForm = () => {
-  const { form, onSubmit, handleBack, isPending } = useResetPasswordForm();
+type ResetPasswordFormProps = {
+  userId: User["id"];
+};
+
+export const ResetPasswordForm = ({ userId }: ResetPasswordFormProps) => {
+  const { form, onSubmit, handleBack, isPending } = useResetPasswordForm(userId);
 
   const { handleSubmit, control } = form;
 
   return (
     <Form {...form}>
       <form className="flex flex-col items-center gap-y-5" onSubmit={handleSubmit(onSubmit)}>
-        <FormField
-          control={control}
-          name="passwordResetCode"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Password Reset Code</FormLabel>
-              <FormControl>
-                <InputOTP maxLength={6} {...field} pattern={REGEXP_ONLY_DIGITS} disabled={isPending}>
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={control}
           name="password"
