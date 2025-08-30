@@ -11,11 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
 import { Route as AuthSignupIndexRouteImport } from './routes/auth/signup/index'
+import { Route as AuthForgotPasswordIndexRouteImport } from './routes/auth/forgot-password/index'
 import { Route as AuthSignupConfirmRouteImport } from './routes/auth/signup/confirm'
+import { Route as AuthForgotPasswordConfirmRouteImport } from './routes/auth/forgot-password/confirm'
 
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/auth',
@@ -27,19 +27,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthSignupIndexRoute = AuthSignupIndexRouteImport.update({
@@ -47,38 +37,49 @@ const AuthSignupIndexRoute = AuthSignupIndexRouteImport.update({
   path: '/signup/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthForgotPasswordIndexRoute = AuthForgotPasswordIndexRouteImport.update({
+  id: '/forgot-password/',
+  path: '/forgot-password/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthSignupConfirmRoute = AuthSignupConfirmRouteImport.update({
   id: '/signup/confirm',
   path: '/signup/confirm',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthForgotPasswordConfirmRoute =
+  AuthForgotPasswordConfirmRouteImport.update({
+    id: '/forgot-password/confirm',
+    path: '/forgot-password/confirm',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/forgot-password/confirm': typeof AuthForgotPasswordConfirmRoute
   '/auth/signup/confirm': typeof AuthSignupConfirmRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordIndexRoute
   '/auth/signup': typeof AuthSignupIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/forgot-password/confirm': typeof AuthForgotPasswordConfirmRoute
   '/auth/signup/confirm': typeof AuthSignupConfirmRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordIndexRoute
   '/auth/signup': typeof AuthSignupIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteRouteWithChildren
-  '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
-  '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/auth/forgot-password/confirm': typeof AuthForgotPasswordConfirmRoute
   '/auth/signup/confirm': typeof AuthSignupConfirmRoute
+  '/auth/forgot-password/': typeof AuthForgotPasswordIndexRoute
   '/auth/signup/': typeof AuthSignupIndexRoute
 }
 export interface FileRouteTypes {
@@ -86,28 +87,28 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/auth/forgot-password'
     | '/auth/login'
-    | '/auth/reset-password'
+    | '/auth/forgot-password/confirm'
     | '/auth/signup/confirm'
+    | '/auth/forgot-password'
     | '/auth/signup'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/auth/forgot-password'
     | '/auth/login'
-    | '/auth/reset-password'
+    | '/auth/forgot-password/confirm'
     | '/auth/signup/confirm'
+    | '/auth/forgot-password'
     | '/auth/signup'
   id:
     | '__root__'
     | '/'
     | '/auth'
-    | '/auth/forgot-password'
     | '/auth/login'
-    | '/auth/reset-password'
+    | '/auth/forgot-password/confirm'
     | '/auth/signup/confirm'
+    | '/auth/forgot-password/'
     | '/auth/signup/'
   fileRoutesById: FileRoutesById
 }
@@ -132,25 +133,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth/reset-password': {
-      id: '/auth/reset-password'
-      path: '/reset-password'
-      fullPath: '/auth/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
     '/auth/login': {
       id: '/auth/login'
       path: '/login'
       fullPath: '/auth/login'
       preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/auth/forgot-password': {
-      id: '/auth/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/auth/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/auth/signup/': {
@@ -160,6 +147,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/auth/forgot-password/': {
+      id: '/auth/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/auth/signup/confirm': {
       id: '/auth/signup/confirm'
       path: '/signup/confirm'
@@ -167,22 +161,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupConfirmRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/auth/forgot-password/confirm': {
+      id: '/auth/forgot-password/confirm'
+      path: '/forgot-password/confirm'
+      fullPath: '/auth/forgot-password/confirm'
+      preLoaderRoute: typeof AuthForgotPasswordConfirmRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
   }
 }
 
 interface AuthRouteRouteChildren {
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthForgotPasswordConfirmRoute: typeof AuthForgotPasswordConfirmRoute
   AuthSignupConfirmRoute: typeof AuthSignupConfirmRoute
+  AuthForgotPasswordIndexRoute: typeof AuthForgotPasswordIndexRoute
   AuthSignupIndexRoute: typeof AuthSignupIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
-  AuthResetPasswordRoute: AuthResetPasswordRoute,
+  AuthForgotPasswordConfirmRoute: AuthForgotPasswordConfirmRoute,
   AuthSignupConfirmRoute: AuthSignupConfirmRoute,
+  AuthForgotPasswordIndexRoute: AuthForgotPasswordIndexRoute,
   AuthSignupIndexRoute: AuthSignupIndexRoute,
 }
 

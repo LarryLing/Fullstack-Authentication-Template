@@ -234,7 +234,7 @@ export const forgotPassword = async (
     VerificationCodeTypes.PASSWORD_RESET,
   ]);
 
-  const url = `${APP_ORIGIN}/auth/signup/confirm?code=${password_reset_code}`;
+  const url = `${APP_ORIGIN}/auth/forgot-password/confirm?code=${password_reset_code}`;
   const { error } = await sendMail({ to: email, ...getPasswordResetTemplate(url) });
 
   if (error) {
@@ -250,12 +250,11 @@ export const forgotPassword = async (
   });
 };
 
-export const resetPassword = async (
-  req: Request<{ code: string }, unknown, Pick<User, "id" | "password">>,
+export const confirmForgotPassword = async (
+  req: Request<{ code: string }, unknown, unknown>,
   res: Response
 ): Promise<void> => {
   const { code } = req.params;
-  const { password } = req.body;
 
   const [password_reset_code] = await db.query<VerificationCode[]>(
     "SELECT * FROM verification_codes WHERE id = ? AND type = ? AND expires_at > ?",
@@ -270,23 +269,25 @@ export const resetPassword = async (
     });
   }
 
-  const [user] = await db.query<User[]>("SELECT * FROM users WHERE id = ?", [password_reset_code[0].user_id]);
-
-  if (!user[0]) {
-    throw new AuthError({
-      message: "An account with this ID was not found",
-      status: NOT_FOUND,
-      code: AuthErrorCodes.USER_NOT_FOUND,
-    });
-  }
-
   await db.query("DELETE FROM verification_codes WHERE user_id = ? AND type = ?", [
     password_reset_code[0].user_id,
     VerificationCodeTypes.PASSWORD_RESET,
   ]);
 
+  res.status(OK).json({
+    message: "Successfully validated reset password code",
+    user_id: password_reset_code[0].user_id,
+  });
+};
+
+export const resetPassword = async (
+  req: Request<unknown, unknown, Pick<User, "id" | "password">>,
+  res: Response
+): Promise<void> => {
+  const { id, password } = req.body;
+
   const hashed_password = await hashPassword(password);
-  await db.query("UPDATE users SET password = ? WHERE id = ?", [hashed_password, user[0].id]);
+  await db.query("UPDATE users SET password = ? WHERE id = ?", [hashed_password, id]);
 
   clearAuthCookies(res);
 

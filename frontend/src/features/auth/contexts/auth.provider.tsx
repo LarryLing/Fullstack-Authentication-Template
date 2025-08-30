@@ -4,14 +4,14 @@ import { type PropsWithChildren } from "react";
 
 import type { User } from "@/types/user.type";
 
+import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
+
 import { getUser } from "../auth.api";
 import { AuthContext } from "./auth.context";
 
-export const AUTH = "auth";
-
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const { data: user, ...rest } = useQuery({
-    queryKey: [AUTH],
+    queryKey: [AUTH_QUERY_KEY],
     queryFn: getUser,
     staleTime: Infinity,
   });

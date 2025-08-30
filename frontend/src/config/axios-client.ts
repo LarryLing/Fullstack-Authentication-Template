@@ -3,7 +3,7 @@ import axios from "axios";
 import { UNAUTHORIZED } from "@/constants/http";
 import { AuthErrorCodes } from "@/errors/auth-error";
 import { refresh } from "@/features/auth/auth.api";
-import { AUTH } from "@/features/auth/contexts/auth.provider";
+import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 import { navigate } from "@/lib/navigation";
 
 import queryClient from "./query-client";
@@ -29,7 +29,7 @@ axiosClient.interceptors.response.use(
         await refresh();
         return tokenRefreshClient.request(config);
       } catch {
-        queryClient.invalidateQueries({ queryKey: [AUTH] });
+        queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
         navigate?.({ to: "/auth/login", search: { redirect: location.href } });
       }
     }

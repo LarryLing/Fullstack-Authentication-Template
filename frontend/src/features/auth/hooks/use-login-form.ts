@@ -4,12 +4,11 @@ import { useNavigate } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
-import type AuthError from "@/errors/auth-error";
-
 import queryClient from "@/config/query-client";
+import AuthError from "@/errors/auth-error";
+import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 
 import { login } from "../auth.api";
-import { AUTH } from "../contexts/auth.provider";
 import { LoginSchema, type LoginSchemaType } from "../schemas/login.schema";
 
 export type UseLoginFormReturnType = {
@@ -32,11 +31,12 @@ export const useLoginForm = (redirect: string | undefined): UseLoginFormReturnTy
   const { mutateAsync: loginMutationAsync, isPending } = useMutation({
     mutationFn: login,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [AUTH] });
+      queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
       navigate({ to: redirect || "/", replace: true });
     },
-    onError: (error: AuthError) => {
-      toast.error(error.message);
+    onError: (error) => {
+      const message = error instanceof AuthError ? error.message : "An unknown error occurred";
+      toast.error(message);
     },
   });
 

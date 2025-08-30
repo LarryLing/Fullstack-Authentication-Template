@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
-import type AuthError from "@/errors/auth-error";
+import AuthError from "@/errors/auth-error";
 
 import { forgotPassword } from "../auth.api";
 import { ForgotPasswordSchema, type ForgotPasswordSchemaType } from "../schemas/forgot-password.schema";
@@ -30,8 +30,9 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturnType => {
     isSuccess,
   } = useMutation({
     mutationFn: forgotPassword,
-    onError: (error: AuthError) => {
-      toast.error(error.message);
+    onError: (error) => {
+      const message = error instanceof AuthError ? error.message : "An unknown error occurred";
+      toast.error(message);
     },
   });
 
