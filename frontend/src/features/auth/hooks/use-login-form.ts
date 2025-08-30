@@ -1,14 +1,22 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
+import { useNavigate } from "@tanstack/react-router";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
+
+import type AuthError from "@/errors/auth-error";
 
 import { login } from "../auth.api";
 import { loginFormSchema, type LoginFormType } from "../schemas/login.schema";
 
-export const useLoginForm = () => {
-  const router = useRouter();
+export type UseLoginFormReturnType = {
+  form: UseFormReturn<LoginFormType>;
+  onSubmit: (data: LoginFormType) => void;
+  isPending: boolean;
+};
+
+export const useLoginForm = (redirect: string | undefined): UseLoginFormReturnType => {
+  const navigate = useNavigate();
 
   const form = useForm<LoginFormType>({
     defaultValues: {
@@ -21,10 +29,10 @@ export const useLoginForm = () => {
   const { mutateAsync: loginMutationAsync, isPending } = useMutation({
     mutationFn: login,
     onSuccess: () => {
-      router.navigate({ to: "/", replace: true });
+      navigate({ to: redirect || "/", replace: true });
     },
-    onError: (error) => {
-      toast.error("Failed to login. Please try again.", {
+    onError: (error: AuthError) => {
+      toast.error("Failed to login", {
         description: error.message,
       });
     },
@@ -34,9 +42,5 @@ export const useLoginForm = () => {
     await loginMutationAsync(values);
   };
 
-  const handleBack = () => {
-    router.history.back();
-  };
-
-  return { form, onSubmit, handleBack, isPending };
+  return { form, onSubmit, isPending };
 };

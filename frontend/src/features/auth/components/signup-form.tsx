@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useSignUpForm } from "../hooks/use-signup-form";
+import type { UseSignUpFormReturnType } from "../hooks/use-signup-form";
 
-export const SignUpForm = () => {
-  const { form, onSubmit, handleBack, isPending } = useSignUpForm();
+type SignUpFormProps = Pick<UseSignUpFormReturnType, "form" | "onSubmit" | "isPending">;
 
+export const SignUpForm = ({ form, onSubmit, isPending }: SignUpFormProps) => {
   const { handleSubmit, control } = form;
 
   return (
@@ -29,7 +29,7 @@ export const SignUpForm = () => {
         />
         <FormField
           control={control}
-          name="firstName"
+          name="first_name"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>First Name</FormLabel>
@@ -42,7 +42,7 @@ export const SignUpForm = () => {
         />
         <FormField
           control={control}
-          name="lastName"
+          name="last_name"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Last Name</FormLabel>
@@ -68,7 +68,7 @@ export const SignUpForm = () => {
         />
         <FormField
           control={control}
-          name="confirmPassword"
+          name="confirm_password"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Confirm Password</FormLabel>
@@ -79,14 +79,9 @@ export const SignUpForm = () => {
             </FormItem>
           )}
         />
-        <div className="flex flex-row-reverse gap-x-2 w-full">
-          <Button type="submit" disabled={isPending}>
-            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
-          </Button>
-          <Button variant="outline" type="button" onClick={handleBack} disabled={isPending}>
-            Back
-          </Button>
-        </div>
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign Up"}
+        </Button>
       </form>
     </Form>
   );

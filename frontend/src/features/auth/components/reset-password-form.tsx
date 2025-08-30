@@ -4,15 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useResetPasswordForm } from "../hooks/use-reset-password-form";
+import { type UseResetPasswordFormReturnType } from "../hooks/use-reset-password-form";
 
-type ResetPasswordFormProps = {
-  code: string;
-};
+type ResetPasswordFormProps = Pick<UseResetPasswordFormReturnType, "form" | "onSubmit" | "isPending">;
 
-export const ResetPasswordForm = ({ code }: ResetPasswordFormProps) => {
-  const { form, onSubmit, handleBack, isPending } = useResetPasswordForm(code);
-
+export const ResetPasswordForm = ({ form, onSubmit, isPending }: ResetPasswordFormProps) => {
   const { handleSubmit, control } = form;
 
   return (
@@ -33,7 +29,7 @@ export const ResetPasswordForm = ({ code }: ResetPasswordFormProps) => {
         />
         <FormField
           control={control}
-          name="confirmPassword"
+          name="confirm_password"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel>Confirm Password</FormLabel>
@@ -44,14 +40,9 @@ export const ResetPasswordForm = ({ code }: ResetPasswordFormProps) => {
             </FormItem>
           )}
         />
-        <div className="flex flex-row-reverse gap-x-2 w-full">
-          <Button type="submit" disabled={isPending}>
-            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Reset Password"}
-          </Button>
-          <Button variant="outline" type="button" onClick={handleBack} disabled={isPending}>
-            Back
-          </Button>
-        </div>
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Reset Password"}
+        </Button>
       </form>
     </Form>
   );

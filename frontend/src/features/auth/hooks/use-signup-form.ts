@@ -1,37 +1,41 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
+
+import type AuthError from "@/errors/auth-error";
 
 import { signup } from "../auth.api";
 import { signUpFormSchema, type SignUpFormType } from "../schemas/signup.schema";
 
-export const useSignUpForm = () => {
-  const router = useRouter();
+export type UseSignUpFormReturnType = {
+  form: UseFormReturn<SignUpFormType>;
+  onSubmit: (data: SignUpFormType) => void;
+  isPending: boolean;
+  isSuccess: boolean;
+};
 
+export const useSignUpForm = (): UseSignUpFormReturnType => {
   const form = useForm<SignUpFormType>({
     defaultValues: {
       email: "",
-      firstName: "",
-      lastName: "",
+      first_name: "",
+      last_name: "",
       password: "",
-      confirmPassword: "",
+      confirm_password: "",
     },
     // @ts-expect-error - zodResolver is not typed correctly
     resolver: zodResolver(signUpFormSchema),
   });
 
-  const { mutateAsync: signupMutationAsync, isPending } = useMutation({
+  const {
+    mutateAsync: signupMutationAsync,
+    isPending,
+    isSuccess,
+  } = useMutation({
     mutationFn: signup,
-    onSuccess: () => {
-      form.reset();
-      toast.success("Successfully signed up!", {
-        description: "Please check your email to confirm your account",
-      });
-    },
-    onError: (error) => {
-      toast.error("Failed to signup. Please try again.", {
+    onError: (error: AuthError) => {
+      toast.error("Failed to sign up", {
         description: error.message,
       });
     },
@@ -41,9 +45,5 @@ export const useSignUpForm = () => {
     await signupMutationAsync(values);
   };
 
-  const handleBack = () => {
-    router.history.back();
-  };
-
-  return { form, onSubmit, handleBack, isPending };
+  return { form, onSubmit, isPending, isSuccess };
 };

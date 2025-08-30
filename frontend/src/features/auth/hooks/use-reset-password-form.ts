@@ -1,31 +1,38 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
+
+import type AuthError from "@/errors/auth-error";
 
 import { resetPassword } from "../auth.api";
 import { resetPasswordFormSchema, type ResetPasswordFormType } from "../schemas/reset-password.schema";
 
-export const useResetPasswordForm = (code: string) => {
-  const router = useRouter();
+export type UseResetPasswordFormReturnType = {
+  form: UseFormReturn<ResetPasswordFormType>;
+  onSubmit: (data: ResetPasswordFormType) => void;
+  isPending: boolean;
+  isSuccess: boolean;
+};
 
+export const useResetPasswordForm = (code: string): UseResetPasswordFormReturnType => {
   const form = useForm<ResetPasswordFormType>({
     defaultValues: {
       password: "",
-      confirmPassword: "",
+      confirm_password: "",
     },
     // @ts-expect-error - zodResolver is not typed correctly
     resolver: zodResolver(resetPasswordFormSchema),
   });
 
-  const { mutateAsync: resetPasswordMutationAsync, isPending } = useMutation({
+  const {
+    mutateAsync: resetPasswordMutationAsync,
+    isPending,
+    isSuccess,
+  } = useMutation({
     mutationFn: resetPassword,
-    onSuccess: () => {
-      router.navigate({ to: "/auth/login", replace: true });
-    },
-    onError: (error) => {
-      toast.error("Failed to reset password. Please try again.", {
+    onError: (error: AuthError) => {
+      toast.error("Failed to reset password", {
         description: error.message,
       });
     },
@@ -35,9 +42,5 @@ export const useResetPasswordForm = (code: string) => {
     await resetPasswordMutationAsync({ ...values, code });
   };
 
-  const handleBack = () => {
-    router.history.back();
-  };
-
-  return { form, onSubmit, handleBack, isPending };
+  return { form, onSubmit, isPending, isSuccess };
 };

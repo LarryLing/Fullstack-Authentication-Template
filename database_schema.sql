@@ -11,21 +11,16 @@ CREATE TABLE IF NOT EXISTS users (
   last_name VARCHAR(100) NOT NULL,
   created_at BIGINT NOT NULL,
   verified_at BIGINT NULL,
-  last_logged_in_at BIGINT NULL,
-  INDEX idx_email (email),
-  INDEX idx_created_at (created_at),
-  INDEX idx_verified_at (verified_at)
+  last_logged_in_at BIGINT NULL
 );
 
 -- Verification codes table
 CREATE TABLE IF NOT EXISTS verification_codes (
+  id VARCHAR(36) PRIMARY KEY,
   user_id VARCHAR(36) NOT NULL,
   issued_at BIGINT NOT NULL,
   expires_at BIGINT NOT NULL,
-  code VARCHAR(10) NOT NULL,
   type ENUM('signup', 'password_reset') NOT NULL,
-  PRIMARY KEY (user_id, code, type),
-  INDEX idx_user_id_type (user_id, type),
-  INDEX idx_expires_at (expires_at),
+  PRIMARY KEY (id, type),
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

@@ -1,15 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
+
+import type AuthError from "@/errors/auth-error";
 
 import { forgotPassword } from "../auth.api";
 import { forgotPasswordFormSchema, type ForgotPasswordFormType } from "../schemas/forgot-password.schema";
 
-export const useForgotPasswordForm = () => {
-  const router = useRouter();
+export type UseForgotPasswordFormReturnType = {
+  form: UseFormReturn<ForgotPasswordFormType>;
+  onSubmit: (data: ForgotPasswordFormType) => void;
+  isPending: boolean;
+  isSuccess: boolean;
+};
 
+export const useForgotPasswordForm = (): UseForgotPasswordFormReturnType => {
   const form = useForm<ForgotPasswordFormType>({
     defaultValues: {
       email: "",
@@ -18,16 +24,14 @@ export const useForgotPasswordForm = () => {
     resolver: zodResolver(forgotPasswordFormSchema),
   });
 
-  const { mutateAsync: forgotPasswordMutationaAsync, isPending } = useMutation({
+  const {
+    mutateAsync: forgotPasswordMutationaAsync,
+    isPending,
+    isSuccess,
+  } = useMutation({
     mutationFn: forgotPassword,
-    onSuccess: () => {
-      form.reset();
-      toast.success("Successfully sent reset password email", {
-        description: "Please check your email for a link to reset your password",
-      });
-    },
-    onError: (error) => {
-      toast.error("Failed to send reset password email. Please try again.", {
+    onError: (error: AuthError) => {
+      toast.error("Failed to send reset password email", {
         description: error.message,
       });
     },
@@ -37,9 +41,5 @@ export const useForgotPasswordForm = () => {
     await forgotPasswordMutationaAsync(values);
   };
 
-  const handleBack = () => {
-    router.history.back();
-  };
-
-  return { form, onSubmit, handleBack, isPending };
+  return { form, onSubmit, isPending, isSuccess };
 };

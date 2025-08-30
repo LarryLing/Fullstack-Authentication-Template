@@ -5,22 +5,32 @@ import type { LoginFormType } from "./schemas/login.schema";
 import type { ResetPasswordFormType } from "./schemas/reset-password.schema";
 import type { SignUpFormType } from "./schemas/signup.schema";
 
+export const getUser = async () => {
+  const response = await axiosClient.get("/auth/me");
+  return response.data;
+};
+
 export const login = async (data: LoginFormType) => {
-  return await axiosClient.post("/auth/login", data);
+  const response = await axiosClient.post("/auth/login", data);
+  return response.data;
 };
 
 export const signup = async (data: SignUpFormType) => {
-  return await axiosClient.post("/auth/signup", data);
+  const response = await axiosClient.post("/auth/signup", data);
+  return response.data;
 };
 
 export const confirmSignup = async (code: string) => {
-  return await axiosClient.post(`/auth/confirm-signup/${code}`);
+  const response = await axiosClient.post(`/auth/confirm-signup/${code}`);
+  return response.data;
 };
 
 export const forgotPassword = async (data: ForgotPasswordFormType) => {
-  return await axiosClient.post("/auth/forgot-password", data);
+  const response = await axiosClient.post("/auth/forgot-password", data);
+  return response.data;
 };
 
 export const resetPassword = async (data: ResetPasswordFormType & { code: string }) => {
-  return await axiosClient.patch(`/auth/reset-password/${data.code}`, data);
+  const response = await axiosClient.patch(`/auth/reset-password/${data.code}`, data);
+  return response.data;
 };

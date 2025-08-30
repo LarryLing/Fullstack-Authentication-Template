@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { useForgotPasswordForm } from "../hooks/use-forgot-password.form";
+import { type UseForgotPasswordFormReturnType } from "../hooks/use-forgot-password.form";
 
-export const ForgotPasswordForm = () => {
-  const { form, onSubmit, handleBack, isPending } = useForgotPasswordForm();
+type ForgotPasswordFormProps = Pick<UseForgotPasswordFormReturnType, "form" | "onSubmit" | "isPending">;
 
+export const ForgotPasswordForm = ({ form, onSubmit, isPending }: ForgotPasswordFormProps) => {
   const { handleSubmit, control } = form;
 
   return (
@@ -27,14 +27,9 @@ export const ForgotPasswordForm = () => {
             </FormItem>
           )}
         />
-        <div className="flex flex-row-reverse gap-x-2 w-full">
-          <Button type="submit" disabled={isPending}>
-            {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Continue"}
-          </Button>
-          <Button variant="outline" type="button" onClick={handleBack} disabled={isPending}>
-            Back
-          </Button>
-        </div>
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : "Continue"}
+        </Button>
       </form>
     </Form>
   );

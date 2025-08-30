@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const authSchema = z
   .object({
-    firstName: z.string().min(1, { message: "First name is required" }),
-    lastName: z.string().min(1, { message: "Last name is required" }),
+    first_name: z.string().min(1, { message: "First name is required" }),
+    last_name: z.string().min(1, { message: "Last name is required" }),
     email: z.email({ message: "Invalid email address" }),
     password: z
       .string()
@@ -18,11 +18,11 @@ export const authSchema = z
       .regex(/[!@#$%^&*(),.?":{}|<>]/, {
         message: "Password must contain at least one special character",
       }),
-    confirmPassword: z.string().min(8),
+    confirm_password: z.string().min(8),
   })
-  .refine((data) => data.password === data.confirmPassword, {
+  .refine((data) => data.password === data.confirm_password, {
     message: "Passwords do not match",
-    path: ["confirmPassword"],
+    path: ["confirm_password"],
   });
 
 export type AuthType = z.infer<typeof authSchema>;

@@ -1,13 +1,26 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import z from "zod";
 
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoginForm } from "@/features/auth/components/login-form";
+import { useLoginForm } from "@/features/auth/hooks/use-login-form";
+
+const loginSearchSchema = z.object({
+  redirect: z.string().optional().catch(""),
+});
 
 export const Route = createFileRoute("/auth/login")({
+  validateSearch: loginSearchSchema,
   component: Login,
 });
 
 function Login() {
+  const { redirect } = Route.useSearch();
+
+  const useLoginFormReturn = useLoginForm(redirect);
+
+  const { isPending } = useLoginFormReturn;
+
   return (
     <>
       <CardHeader>
@@ -15,8 +28,16 @@ function Login() {
         <CardDescription>Enter your credentials to log in.</CardDescription>
       </CardHeader>
       <CardContent>
-        <LoginForm />
+        <LoginForm {...useLoginFormReturn} />
       </CardContent>
+      <CardFooter className="text-sm flex justify-center">
+        <p>
+          Don't have an account?{" "}
+          <Link to="/auth/signup" className="text-sm text-primary hover:underline cursor-default" disabled={isPending}>
+            Sign Up
+          </Link>
+        </p>
+      </CardFooter>
     </>
   );
 }

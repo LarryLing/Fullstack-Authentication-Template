@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { REFRESH_TOKEN_SECRET } from "../constants/env.js";
 import { BAD_REQUEST, CONFLICT, CREATED, NOT_FOUND, OK, UNAUTHORIZED } from "../constants/http.js";
-import AuthError, { AuthErrorCodes } from "../errors/auth-error.js";
+import AuthError, { AuthErrorCodes } from "../errors/auth.error.js";
 import { User } from "../models/user.model.js";
 import { VerificationCode, VerificationCodeTypes } from "../models/verification-code.model.js";
 import db from "../services/db.js";
@@ -30,7 +30,7 @@ export const me = async (req: Request, res: Response) => {
   }
 
   res.status(OK).json({
-    message: "User successfully retrieved",
+    message: "Successfully retrieved user",
     data: {
       user: {
         id: user[0].id,
@@ -52,7 +52,7 @@ export const signup = async (
 
   if (user[0] && user[0].verified_at !== null) {
     throw new AuthError({
-      message: "An account with this email already exists, please login",
+      message: "An account with this email already exists",
       status: CONFLICT,
       code: AuthErrorCodes.USER_ALREADY_EXISTS,
     });
@@ -72,7 +72,7 @@ export const signup = async (
 
   if (codes.length > 0) {
     throw new AuthError({
-      message: "A verification code has recently been sent to this email, please check your inbox",
+      message: "A verification code has already been recently sent to this email",
       status: CONFLICT,
       code: AuthErrorCodes.TOO_MANY_REQUESTS,
     });
@@ -93,7 +93,7 @@ export const signup = async (
   // https://<FRONTEND_URL>/auth/signup/confirm?code=<VERIFICATION_CODE>
 
   res.status(CREATED).json({
-    message: "Please check your email for a verification code",
+    message: "Successfully sent signup email",
   });
 };
 
@@ -107,7 +107,7 @@ export const confirmSignup = async (req: Request<{ code: string }, unknown, unkn
 
   if (!verification_code[0]) {
     throw new AuthError({
-      message: "The provided verification code is invalid or has expired, please request a new one",
+      message: "The verification code is invalid or has expired",
       status: BAD_REQUEST,
       code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
     });
@@ -141,7 +141,7 @@ export const confirmSignup = async (req: Request<{ code: string }, unknown, unkn
   setAuthCookies(res, access_token, refresh_token);
 
   res.status(OK).json({
-    message: "Email verified successfully",
+    message: "Successfully logged in",
   });
 };
 
@@ -155,7 +155,7 @@ export const login = async (
 
   if (!user[0] || user[0].verified_at === null || user[0].password === null) {
     throw new AuthError({
-      message: "Incorrect email or password",
+      message: "Invalid email or password",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.INVALID_CREDENTIALS,
     });
@@ -164,7 +164,7 @@ export const login = async (
   const is_password_correct = await comparePassword(password, user[0].password);
   if (!is_password_correct) {
     throw new AuthError({
-      message: "Incorrect email or password",
+      message: "Invalid email or password",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.INVALID_CREDENTIALS,
     });
@@ -207,7 +207,7 @@ export const forgotPassword = async (
 
   if (!user[0] || user[0].verified_at === null) {
     throw new AuthError({
-      message: "An account with this email does not exist, please sign up",
+      message: "No account found with this email",
       status: NOT_FOUND,
       code: AuthErrorCodes.USER_NOT_FOUND,
     });
@@ -220,7 +220,7 @@ export const forgotPassword = async (
 
   if (codes.length > 0) {
     throw new AuthError({
-      message: "A verification code has recently been sent to this email, please check your inbox",
+      message: "A password reset code has already been recently sent to this email",
       status: CONFLICT,
       code: AuthErrorCodes.TOO_MANY_REQUESTS,
     });
@@ -241,7 +241,7 @@ export const forgotPassword = async (
   // https://<FRONTEND_URL>/auth/reset-password/confirm?code=<VERIFICATION_CODE>
 
   res.status(OK).json({
-    message: "Reset password email sent",
+    message: "Successfully sent reset password email",
   });
 };
 
@@ -259,7 +259,7 @@ export const resetPassword = async (
 
   if (!verification_code[0]) {
     throw new AuthError({
-      message: "The provided verification code is invalid or has expired, please request a new one",
+      message: "The password reset code is invalid or has expired",
       status: BAD_REQUEST,
       code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
     });
@@ -269,7 +269,7 @@ export const resetPassword = async (
 
   if (!user[0]) {
     throw new AuthError({
-      message: "Could not find user with the provided id. Please sign up.",
+      message: "User account not found",
       status: NOT_FOUND,
       code: AuthErrorCodes.USER_NOT_FOUND,
     });
@@ -286,7 +286,7 @@ export const resetPassword = async (
   clearAuthCookies(res);
 
   res.status(OK).json({
-    message: "Password reset successfully, please login with your new password",
+    message: "Successfully reset password",
   });
 };
 
@@ -303,7 +303,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
 
   if (!refresh_token) {
     throw new AuthError({
-      message: "No refresh token found, please login",
+      message: "No refresh token found",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.MISSING_REFRESH_TOKEN,
     });
@@ -313,7 +313,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
 
   if (!payload || payload.type !== JwtTokenType.REFRESH || payload.exp! < Date.now()) {
     throw new AuthError({
-      message: "The provided refresh token is invalid or has expired, please login",
+      message: "The refresh token is invalid or has expired",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.INVALID_REFRESH_TOKEN,
     });

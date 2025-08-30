@@ -7,8 +7,8 @@ const options = {
 
 const axiosClient = axios.create(options);
 
-axiosClient.interceptors.request.use(
-  (response) => response.data,
+axiosClient.interceptors.response.use(
+  (response) => response,
   (error) => {
     const { status, data } = error.response;
     return Promise.reject({ status, ...data });

@@ -4,7 +4,7 @@ import { authSchema } from "./auth.schema";
 
 export const resetPasswordFormSchema = authSchema.pick({
   password: true,
-  confirmPassword: true,
+  confirm_password: true,
 });
 
 export type ResetPasswordFormType = z.infer<typeof resetPasswordFormSchema>;
