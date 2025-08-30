@@ -22,8 +22,8 @@ import {
   setAuthCookies,
 } from "../utils/cookie.js";
 import { tenMinutesFromNow, ONE_DAY_IN_MILLISECONDS } from "../utils/date.js";
-import { getPasswordResetTemplate, getVerifyEmailTemplate, sendMail } from "../utils/email.js";
 import { generateJwtToken, JwtTokenType, RefreshTokenSignOptions, verifyJwtToken } from "../utils/jwt.js";
+import { getPasswordResetTemplate, getVerifyEmailTemplate, sendMail } from "../utils/send-mail.js";
 
 export const me = async (req: Request, res: Response) => {
   const { user_id } = req;

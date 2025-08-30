@@ -1,4 +1,4 @@
-import axiosClient from "@/config/axios-client";
+import axiosClient, { tokenRefreshClient } from "@/config/axios-client";
 
 import type { ForgotPasswordSchemaType } from "./schemas/forgot-password.schema";
 import type { LoginSchemaType } from "./schemas/login.schema";
@@ -37,5 +37,10 @@ export const resetPassword = async (data: ResetPasswordSchemaType & { code: stri
 
 export const logout = async () => {
   const response = await axiosClient.post("/auth/logout");
+  return response.data;
+};
+
+export const refresh = async () => {
+  const response = await tokenRefreshClient.post("/auth/refresh");
   return response.data;
 };

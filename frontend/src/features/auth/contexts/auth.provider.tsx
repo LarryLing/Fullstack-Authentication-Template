@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   if (value.isPending) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="size-6 animate-spin" />
+        <Loader2 className="size-8 animate-spin" />
       </div>
     );
   }
