@@ -1,10 +1,8 @@
 import { z } from "zod";
 
-import { authSchema } from "./auth.schema";
-
-export const loginFormSchema = authSchema.pick({
-  email: true,
-  password: true,
+export const LoginSchema = z.object({
+  email: z.email({ message: "Invalid email address" }),
+  password: z.string(),
 });
 
-export type LoginFormType = z.infer<typeof loginFormSchema>;
+export type LoginSchemaType = z.infer<typeof LoginSchema>;

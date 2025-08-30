@@ -6,22 +6,22 @@ import { toast } from "sonner";
 import type AuthError from "@/errors/auth-error";
 
 import { forgotPassword } from "../auth.api";
-import { forgotPasswordFormSchema, type ForgotPasswordFormType } from "../schemas/forgot-password.schema";
+import { ForgotPasswordSchema, type ForgotPasswordSchemaType } from "../schemas/forgot-password.schema";
 
 export type UseForgotPasswordFormReturnType = {
-  form: UseFormReturn<ForgotPasswordFormType>;
-  onSubmit: (data: ForgotPasswordFormType) => void;
+  form: UseFormReturn<ForgotPasswordSchemaType>;
+  onSubmit: (data: ForgotPasswordSchemaType) => void;
   isPending: boolean;
   isSuccess: boolean;
 };
 
 export const useForgotPasswordForm = (): UseForgotPasswordFormReturnType => {
-  const form = useForm<ForgotPasswordFormType>({
+  const form = useForm<ForgotPasswordSchemaType>({
     defaultValues: {
       email: "",
     },
     // @ts-expect-error - zodResolver is not typed correctly
-    resolver: zodResolver(forgotPasswordFormSchema),
+    resolver: zodResolver(ForgotPasswordSchema),
   });
 
   const {
@@ -31,13 +31,11 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturnType => {
   } = useMutation({
     mutationFn: forgotPassword,
     onError: (error: AuthError) => {
-      toast.error("Failed to send reset password email", {
-        description: error.message,
-      });
+      toast.error(error.message);
     },
   });
 
-  const onSubmit = async (values: ForgotPasswordFormType) => {
+  const onSubmit = async (values: ForgotPasswordSchemaType) => {
     await forgotPasswordMutationaAsync(values);
   };
 

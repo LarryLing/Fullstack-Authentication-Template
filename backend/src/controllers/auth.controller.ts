@@ -23,7 +23,7 @@ export const me = async (req: Request, res: Response) => {
 
   if (!user[0]) {
     throw new AuthError({
-      message: "User not found",
+      message: "An account with this ID was not found",
       status: NOT_FOUND,
       code: AuthErrorCodes.USER_NOT_FOUND,
     });
@@ -207,7 +207,7 @@ export const forgotPassword = async (
 
   if (!user[0] || user[0].verified_at === null) {
     throw new AuthError({
-      message: "No account found with this email",
+      message: "An account with this email was not found",
       status: NOT_FOUND,
       code: AuthErrorCodes.USER_NOT_FOUND,
     });
@@ -269,7 +269,7 @@ export const resetPassword = async (
 
   if (!user[0]) {
     throw new AuthError({
-      message: "User account not found",
+      message: "An account with this ID was not found",
       status: NOT_FOUND,
       code: AuthErrorCodes.USER_NOT_FOUND,
     });

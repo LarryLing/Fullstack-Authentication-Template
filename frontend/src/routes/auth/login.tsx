@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import z from "zod";
 
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { LoginForm } from "@/features/auth/components/login-form";
+import { LoginForm } from "@/features/auth/components/login.form";
 import { useLoginForm } from "@/features/auth/hooks/use-login-form";
 
 const loginSearchSchema = z.object({

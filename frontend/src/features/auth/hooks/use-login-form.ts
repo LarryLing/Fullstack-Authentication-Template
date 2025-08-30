@@ -6,39 +6,41 @@ import { toast } from "sonner";
 
 import type AuthError from "@/errors/auth-error";
 
+import queryClient from "@/config/query-client";
+
 import { login } from "../auth.api";
-import { loginFormSchema, type LoginFormType } from "../schemas/login.schema";
+import { AUTH } from "../contexts/auth.provider";
+import { LoginSchema, type LoginSchemaType } from "../schemas/login.schema";
 
 export type UseLoginFormReturnType = {
-  form: UseFormReturn<LoginFormType>;
-  onSubmit: (data: LoginFormType) => void;
+  form: UseFormReturn<LoginSchemaType>;
+  onSubmit: (data: LoginSchemaType) => void;
   isPending: boolean;
 };
 
 export const useLoginForm = (redirect: string | undefined): UseLoginFormReturnType => {
   const navigate = useNavigate();
 
-  const form = useForm<LoginFormType>({
+  const form = useForm<LoginSchemaType>({
     defaultValues: {
       password: "",
     },
     // @ts-expect-error - zodResolver is not typed correctly
-    resolver: zodResolver(loginFormSchema),
+    resolver: zodResolver(LoginSchema),
   });
 
   const { mutateAsync: loginMutationAsync, isPending } = useMutation({
     mutationFn: login,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [AUTH] });
       navigate({ to: redirect || "/", replace: true });
     },
     onError: (error: AuthError) => {
-      toast.error("Failed to login", {
-        description: error.message,
-      });
+      toast.error(error.message);
     },
   });
 
-  const onSubmit = async (values: LoginFormType) => {
+  const onSubmit = async (values: LoginSchemaType) => {
     await loginMutationAsync(values);
   };
 

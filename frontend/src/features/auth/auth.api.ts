@@ -1,21 +1,21 @@
 import axiosClient from "@/config/axios-client";
 
-import type { ForgotPasswordFormType } from "./schemas/forgot-password.schema";
-import type { LoginFormType } from "./schemas/login.schema";
-import type { ResetPasswordFormType } from "./schemas/reset-password.schema";
-import type { SignUpFormType } from "./schemas/signup.schema";
+import type { ForgotPasswordSchemaType } from "./schemas/forgot-password.schema";
+import type { LoginSchemaType } from "./schemas/login.schema";
+import type { ResetPasswordSchemaType } from "./schemas/reset-password.schema";
+import type { SignUpSchemaType } from "./schemas/signup.schema";
 
 export const getUser = async () => {
   const response = await axiosClient.get("/auth/me");
   return response.data;
 };
 
-export const login = async (data: LoginFormType) => {
+export const login = async (data: LoginSchemaType) => {
   const response = await axiosClient.post("/auth/login", data);
   return response.data;
 };
 
-export const signup = async (data: SignUpFormType) => {
+export const signup = async (data: SignUpSchemaType) => {
   const response = await axiosClient.post("/auth/signup", data);
   return response.data;
 };
@@ -25,12 +25,12 @@ export const confirmSignup = async (code: string) => {
   return response.data;
 };
 
-export const forgotPassword = async (data: ForgotPasswordFormType) => {
+export const forgotPassword = async (data: ForgotPasswordSchemaType) => {
   const response = await axiosClient.post("/auth/forgot-password", data);
   return response.data;
 };
 
-export const resetPassword = async (data: ResetPasswordFormType & { code: string }) => {
+export const resetPassword = async (data: ResetPasswordSchemaType & { code: string }) => {
   const response = await axiosClient.patch(`/auth/reset-password/${data.code}`, data);
   return response.data;
 };

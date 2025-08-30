@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AuthAlert } from "@/features/auth/components/auth-alert";
-import { SignUpForm } from "@/features/auth/components/signup-form";
+import { AuthAlert } from "@/features/auth/components/auth.alert";
+import { SignUpForm } from "@/features/auth/components/signup.form";
 import { useSignUpForm } from "@/features/auth/hooks/use-signup-form";
 
 export const Route = createFileRoute("/auth/signup/")({

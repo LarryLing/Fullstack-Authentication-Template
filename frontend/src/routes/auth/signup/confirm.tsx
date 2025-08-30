@@ -5,7 +5,7 @@ import z from "zod";
 
 import { CardContent, CardFooter } from "@/components/ui/card";
 import { confirmSignup } from "@/features/auth/auth.api";
-import { AuthAlert } from "@/features/auth/components/auth-alert";
+import { AuthAlert } from "@/features/auth/components/auth.alert";
 
 const confirmSignupSearchSchema = z.object({
   code: z.string(),

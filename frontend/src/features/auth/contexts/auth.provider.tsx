@@ -5,7 +5,7 @@ import { type PropsWithChildren } from "react";
 import type { User } from "@/types/user.type";
 
 import { getUser } from "../auth.api";
-import { AuthContext } from "./auth-context";
+import { AuthContext } from "./auth.context";
 
 export const AUTH = "auth";
 

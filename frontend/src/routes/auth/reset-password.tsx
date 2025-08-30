@@ -2,8 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import z from "zod";
 
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AuthAlert } from "@/features/auth/components/auth-alert";
-import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
+import { AuthAlert } from "@/features/auth/components/auth.alert";
+import { ResetPasswordForm } from "@/features/auth/components/reset-password.form";
 import { useResetPasswordForm } from "@/features/auth/hooks/use-reset-password-form";
 
 const confirmForgotPasswordSearchSchema = z.object({

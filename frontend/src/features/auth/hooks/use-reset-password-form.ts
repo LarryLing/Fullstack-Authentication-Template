@@ -6,23 +6,23 @@ import { toast } from "sonner";
 import type AuthError from "@/errors/auth-error";
 
 import { resetPassword } from "../auth.api";
-import { resetPasswordFormSchema, type ResetPasswordFormType } from "../schemas/reset-password.schema";
+import { ResetPasswordSchema, type ResetPasswordSchemaType } from "../schemas/reset-password.schema";
 
 export type UseResetPasswordFormReturnType = {
-  form: UseFormReturn<ResetPasswordFormType>;
-  onSubmit: (data: ResetPasswordFormType) => void;
+  form: UseFormReturn<ResetPasswordSchemaType>;
+  onSubmit: (data: ResetPasswordSchemaType) => void;
   isPending: boolean;
   isSuccess: boolean;
 };
 
 export const useResetPasswordForm = (code: string): UseResetPasswordFormReturnType => {
-  const form = useForm<ResetPasswordFormType>({
+  const form = useForm<ResetPasswordSchemaType>({
     defaultValues: {
       password: "",
       confirm_password: "",
     },
     // @ts-expect-error - zodResolver is not typed correctly
-    resolver: zodResolver(resetPasswordFormSchema),
+    resolver: zodResolver(ResetPasswordSchema),
   });
 
   const {
@@ -32,13 +32,11 @@ export const useResetPasswordForm = (code: string): UseResetPasswordFormReturnTy
   } = useMutation({
     mutationFn: resetPassword,
     onError: (error: AuthError) => {
-      toast.error("Failed to reset password", {
-        description: error.message,
-      });
+      toast.error(error.message);
     },
   });
 
-  const onSubmit = async (values: ResetPasswordFormType) => {
+  const onSubmit = async (values: ResetPasswordSchemaType) => {
     await resetPasswordMutationAsync({ ...values, code });
   };
 

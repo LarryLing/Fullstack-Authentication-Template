@@ -6,17 +6,17 @@ import { toast } from "sonner";
 import type AuthError from "@/errors/auth-error";
 
 import { signup } from "../auth.api";
-import { signUpFormSchema, type SignUpFormType } from "../schemas/signup.schema";
+import { SignUpSchema, type SignUpSchemaType } from "../schemas/signup.schema";
 
 export type UseSignUpFormReturnType = {
-  form: UseFormReturn<SignUpFormType>;
-  onSubmit: (data: SignUpFormType) => void;
+  form: UseFormReturn<SignUpSchemaType>;
+  onSubmit: (data: SignUpSchemaType) => void;
   isPending: boolean;
   isSuccess: boolean;
 };
 
 export const useSignUpForm = (): UseSignUpFormReturnType => {
-  const form = useForm<SignUpFormType>({
+  const form = useForm<SignUpSchemaType>({
     defaultValues: {
       email: "",
       first_name: "",
@@ -25,24 +25,21 @@ export const useSignUpForm = (): UseSignUpFormReturnType => {
       confirm_password: "",
     },
     // @ts-expect-error - zodResolver is not typed correctly
-    resolver: zodResolver(signUpFormSchema),
+    resolver: zodResolver(SignUpSchema),
   });
-
   const {
-    mutateAsync: signupMutationAsync,
+    mutateAsync: signUpMutationAsync,
     isPending,
     isSuccess,
   } = useMutation({
     mutationFn: signup,
     onError: (error: AuthError) => {
-      toast.error("Failed to sign up", {
-        description: error.message,
-      });
+      toast.error(error.message);
     },
   });
 
-  const onSubmit = async (values: SignUpFormType) => {
-    await signupMutationAsync(values);
+  const onSubmit = async (values: SignUpSchemaType) => {
+    await signUpMutationAsync(values);
   };
 
   return { form, onSubmit, isPending, isSuccess };
