@@ -28,6 +28,9 @@ importers:
       mysql2:
         specifier: ^3.14.3
         version: 3.14.3
+      resend:
+        specifier: ^6.0.2
+        version: 6.0.2
     devDependencies:
       "@eslint/js":
         specifier: ^9.34.0
@@ -1253,6 +1256,16 @@ packages:
       { integrity: sha512-RmkhL8CAyCRPXCE28MMH0z2PNWQBNk2Q09ZdxM9IOOXwxwZbN+qbWaatPkdkWIKL2ZVDImrN/pK5HTRz2PcS4g== }
     engines: { node: ">= 0.8" }
 
+  resend@6.0.2:
+    resolution:
+      { integrity: sha512-um08qWpSVvEVqAePEy/bsa7pqtnJK+qTCZ0Et7YE7xuqM46J0C9gnSbIJKR3LIcRVMgO9jUeot8rH0UI84eqMQ== }
+    engines: { node: ">=18" }
+    peerDependencies:
+      "@react-email/render": ^1.1.0
+    peerDependenciesMeta:
+      "@react-email/render":
+        optional: true
+
   resolve-from@4.0.0:
     resolution:
       { integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g== }
@@ -2398,6 +2411,8 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.6.3
       unpipe: 1.0.0
+
+  resend@6.0.2: {}
 
   resolve-from@4.0.0: {}
 

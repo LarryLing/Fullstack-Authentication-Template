@@ -34,3 +34,8 @@ export const resetPassword = async (data: ResetPasswordSchemaType & { code: stri
   const response = await axiosClient.patch(`/auth/reset-password/${data.code}`, data);
   return response.data;
 };
+
+export const logout = async () => {
+  const response = await axiosClient.post("/auth/logout");
+  return response.data;
+};

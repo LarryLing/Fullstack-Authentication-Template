@@ -4,7 +4,7 @@ import express from "express";
 import path from "path";
 
 import "./env-loader.js";
-import { NODE_ENV, PORT, WHITELISTED_ORIGIN } from "./constants/env.js";
+import { NODE_ENV, PORT, APP_ORIGIN } from "./constants/env.js";
 import { OK } from "./constants/http.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
@@ -15,7 +15,7 @@ const app = express();
 if (NODE_ENV === "development") {
   const corsOptions: CorsOptions = {
     origin(origin, callback) {
-      if (!origin || WHITELISTED_ORIGIN === origin) {
+      if (!origin || APP_ORIGIN === origin) {
         callback(null, true);
       } else {
         callback(new Error(`CORS error: ${origin} is not allowed by CORS`), false);

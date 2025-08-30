@@ -35,7 +35,7 @@ function Confirm() {
             title={isSuccess ? "Success" : "Failed to confirm account"}
             description={
               isSuccess
-                ? "Your account has been confirmed. You can now continue to the app."
+                ? "Your account has been confirmed. You can now login."
                 : "The link is either invalid or expired."
             }
           />
@@ -43,8 +43,8 @@ function Confirm() {
       </CardContent>
       <CardFooter className="text-sm flex justify-center">
         {isSuccess ? (
-          <Link to="/" className="text-sm text-primary hover:underline cursor-default">
-            Continue to app
+          <Link to="/auth/login" className="text-sm text-primary hover:underline cursor-default">
+            Continue to login
           </Link>
         ) : (
           <Link to="/auth/login" className="text-sm text-primary hover:underline cursor-default">
