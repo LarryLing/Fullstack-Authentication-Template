@@ -40,8 +40,8 @@ export const useLoginForm = (redirect: string | undefined): UseLoginFormReturnTy
     },
   });
 
-  const onSubmit = async (values: LoginSchemaType) => {
-    await loginMutationAsync(values);
+  const onSubmit = async (data: LoginSchemaType) => {
+    await loginMutationAsync(data);
   };
 
   return { form, onSubmit, isPending };

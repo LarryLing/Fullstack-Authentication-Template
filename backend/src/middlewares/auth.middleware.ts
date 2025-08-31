@@ -9,7 +9,7 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
 
   if (!access_token) {
     throw new AuthError({
-      message: "Authentication required. Please log in.",
+      message: "Missing access token",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.MISSING_ACCESS_TOKEN,
     });
@@ -19,7 +19,7 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
 
   if (!payload) {
     throw new AuthError({
-      message: "Invalid access token. Please log in again.",
+      message: "Invalid access token",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.INVALID_ACCESS_TOKEN,
     });

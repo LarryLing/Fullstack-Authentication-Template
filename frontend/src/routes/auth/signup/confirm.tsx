@@ -50,7 +50,7 @@ function Confirm() {
       <CardContent>
         <AuthAlert
           variant="destructive"
-          title="Failed to confirm account"
+          title="Failed to confirm signup"
           description="The link is either invalid or expired."
         />
       </CardContent>

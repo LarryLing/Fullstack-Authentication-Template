@@ -39,9 +39,9 @@ export const useResetPasswordForm = (user_id: User["id"] | undefined): UseResetP
     },
   });
 
-  const onSubmit = async (values: ResetPasswordSchemaType) => {
+  const onSubmit = async (data: ResetPasswordSchemaType) => {
     if (!user_id) return;
-    await resetPasswordMutationAsync({ ...values, id: user_id });
+    await resetPasswordMutationAsync({ ...data, id: user_id });
   };
 
   return { form, onSubmit, isPending, isSuccess };

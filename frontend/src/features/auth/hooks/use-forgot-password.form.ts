@@ -36,8 +36,8 @@ export const useForgotPasswordForm = (): UseForgotPasswordFormReturnType => {
     },
   });
 
-  const onSubmit = async (values: ForgotPasswordSchemaType) => {
-    await forgotPasswordMutationaAsync(values);
+  const onSubmit = async (data: ForgotPasswordSchemaType) => {
+    await forgotPasswordMutationaAsync(data);
   };
 
   return { form, onSubmit, isPending, isSuccess };

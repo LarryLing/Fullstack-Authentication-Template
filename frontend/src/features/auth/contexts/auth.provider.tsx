@@ -10,7 +10,7 @@ import { getUser } from "../auth.api";
 import { AuthContext } from "./auth.context";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const { data: user, ...rest } = useQuery({
+  const { data: user, isPending } = useQuery({
     queryKey: [AUTH_QUERY_KEY],
     queryFn: getUser,
     staleTime: Infinity,
@@ -18,10 +18,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const value = {
     user: user as User | null,
-    ...rest,
+    isPending,
   };
 
-  if (value.isPending) {
+  if (isPending) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="size-8 animate-spin" />

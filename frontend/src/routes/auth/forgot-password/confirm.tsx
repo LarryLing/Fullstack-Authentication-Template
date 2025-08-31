@@ -25,7 +25,7 @@ function Confirm() {
   const {
     data,
     isPending: isConfirmPending,
-    isSuccess: isConfirmSuccess,
+    isError: isConfirmError,
   } = useQuery({
     queryKey: [RESET_PASSWORD_QUERY_KEY],
     queryFn: () => confirmForgotPassword(code),
@@ -43,7 +43,7 @@ function Confirm() {
     );
   }
 
-  if (!isConfirmSuccess) {
+  if (isConfirmError) {
     return (
       <>
         <CardContent>

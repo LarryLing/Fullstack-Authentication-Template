@@ -27,6 +27,7 @@ export const useSignUpForm = (): UseSignUpFormReturnType => {
     // @ts-expect-error - zodResolver is not typed correctly
     resolver: zodResolver(SignUpSchema),
   });
+
   const {
     mutateAsync: signUpMutationAsync,
     isPending,
@@ -39,8 +40,8 @@ export const useSignUpForm = (): UseSignUpFormReturnType => {
     },
   });
 
-  const onSubmit = async (values: SignUpSchemaType) => {
-    await signUpMutationAsync(values);
+  const onSubmit = async (data: SignUpSchemaType) => {
+    await signUpMutationAsync(data);
   };
 
   return { form, onSubmit, isPending, isSuccess };
