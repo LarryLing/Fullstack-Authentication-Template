@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 
-import config from "../config/index.js";
-import GenericError from "../errors/generic-error.js";
+import { DEBUG } from "../constants/env.js";
+import { INTERNAL_SERVER_ERROR } from "../constants/http.js";
+import GenericError from "../errors/generic.error.js";
 import { clearAuthCookies, REFRESH_COOKIE_PATH } from "../utils/cookie.js";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorMiddleware = (error: unknown, req: Request, res: Response, _next: NextFunction) => {
-  if (config.DEBUG === "true") {
+  if (DEBUG === "true") {
     console.error(error);
   }
 
@@ -16,10 +17,8 @@ export const errorMiddleware = (error: unknown, req: Request, res: Response, _ne
 
   if (error instanceof GenericError) {
     res.status(error.status).json({
-      error: {
-        message: error.message,
-        code: error.code,
-      },
+      message: error.message,
+      code: error.code,
     });
     return;
   }
@@ -33,13 +32,11 @@ export const errorMiddleware = (error: unknown, req: Request, res: Response, _ne
   } else if (typeof error === "string") {
     error_message = error;
   } else {
-    error_message = "An unknown error occurred";
+    error_message = "An unknown error occurred.";
   }
 
-  res.status(500).json({
-    error: {
-      message: error_message,
-      code: "INTERNAL_SERVER_ERROR",
-    },
+  res.status(INTERNAL_SERVER_ERROR).json({
+    message: error_message,
+    code: "INTERNAL_SERVER_ERROR",
   });
 };

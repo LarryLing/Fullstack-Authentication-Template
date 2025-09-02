@@ -1,25 +1,34 @@
+import type { QueryClient } from "@tanstack/react-query";
+
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet, useNavigate } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
-import { Toaster } from "@/components/ui/sonner";
+import type { AuthContextType } from "@/features/auth/contexts/auth.context";
 
-export const Route = createRootRoute({
-  component: () => (
+import { Toaster } from "@/components/ui/sonner";
+import { setNavigate } from "@/lib/navigation";
+
+interface MyRouterContext {
+  auth: AuthContextType;
+  queryClient: QueryClient;
+}
+
+export const Route = createRootRouteWithContext<MyRouterContext>()({
+  component: Root,
+});
+
+function Root() {
+  const navigate = useNavigate();
+
+  setNavigate(navigate);
+
+  return (
     <>
-      <div className="p-2 flex gap-2">
-        <Link to="/" className="[&.active]:font-bold">
-          Home
-        </Link>{" "}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
-      </div>
-      <hr />
       <Outlet />
       <Toaster richColors />
       <TanStackRouterDevtools position="bottom-left" initialIsOpen={false} />
       <ReactQueryDevtools position="bottom" initialIsOpen={false} />
     </>
-  ),
-});
+  );
+}

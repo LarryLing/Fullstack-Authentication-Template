@@ -1,7 +1,7 @@
 import { NextFunction, Response, Request } from "express";
 
 import { UNAUTHORIZED } from "../constants/http.js";
-import AuthError, { AuthErrorCodes } from "../errors/auth-error.js";
+import AuthError, { AuthErrorCodes } from "../errors/auth.error.js";
 import { verifyJwtToken } from "../utils/jwt.js";
 
 export const authenticate = async (req: Request, _res: Response, next: NextFunction) => {
@@ -9,17 +9,17 @@ export const authenticate = async (req: Request, _res: Response, next: NextFunct
 
   if (!access_token) {
     throw new AuthError({
-      message: "Unauthorized",
+      message: "Missing access token",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.MISSING_ACCESS_TOKEN,
     });
   }
 
-  const { payload, error } = verifyJwtToken(access_token);
+  const { payload } = verifyJwtToken(access_token);
 
   if (!payload) {
     throw new AuthError({
-      message: error!,
+      message: "Invalid access token",
       status: UNAUTHORIZED,
       code: AuthErrorCodes.INVALID_ACCESS_TOKEN,
     });
