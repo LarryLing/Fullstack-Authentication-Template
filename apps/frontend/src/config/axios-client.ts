@@ -1,6 +1,6 @@
+import { UNAUTHORIZED } from "@fullstack-template/http/constants";
 import axios from "axios";
 
-import { UNAUTHORIZED } from "@/constants/http";
 import { AuthErrorCodes } from "@/errors/auth-error";
 import { refresh } from "@/features/auth/auth.api";
 import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";

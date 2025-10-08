@@ -1,7 +1,7 @@
+import { INTERNAL_SERVER_ERROR } from "@fullstack-template/http/constants";
 import { Request, Response, NextFunction } from "express";
 
 import { DEBUG } from "../constants/env.js";
-import { INTERNAL_SERVER_ERROR } from "../constants/http.js";
 import GenericError from "../errors/generic.error.js";
 import { clearAuthCookies, REFRESH_COOKIE_PATH } from "../utils/cookie.js";
 

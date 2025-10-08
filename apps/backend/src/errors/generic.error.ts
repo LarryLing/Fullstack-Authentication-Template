@@ -1,4 +1,4 @@
-import { HttpStatusCode } from "../constants/http.js";
+import { HttpStatusCode } from "@fullstack-template/http/constants";
 
 class GenericError<C extends string> extends Error {
   message: string;

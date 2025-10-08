@@ -1,6 +1,3 @@
-import { Request, Response } from "express";
-
-import { REFRESH_TOKEN_SECRET, APP_ORIGIN } from "../constants/env.js";
 import {
   BAD_REQUEST,
   CONFLICT,
@@ -9,7 +6,10 @@ import {
   NOT_FOUND,
   OK,
   UNAUTHORIZED,
-} from "../constants/http.js";
+} from "@fullstack-template/http/constants";
+import { Request, Response } from "express";
+
+import { REFRESH_TOKEN_SECRET, APP_ORIGIN } from "../constants/env.js";
 import AuthError, { AuthErrorCodes } from "../errors/auth.error.js";
 import { User } from "../models/user.model.js";
 import { VerificationCode, VerificationCodeTypes } from "../models/verification-code.model.js";

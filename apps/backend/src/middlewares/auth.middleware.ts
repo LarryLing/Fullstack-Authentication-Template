@@ -1,6 +1,6 @@
+import { UNAUTHORIZED } from "@fullstack-template/http/constants";
 import { NextFunction, Response, Request } from "express";
 
-import { UNAUTHORIZED } from "../constants/http.js";
 import AuthError, { AuthErrorCodes } from "../errors/auth.error.js";
 import { verifyJwtToken } from "../utils/jwt.js";
 

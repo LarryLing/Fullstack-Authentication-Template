@@ -2,13 +2,13 @@
 
 import path from "path";
 
+import { OK } from "@fullstack-template/http/constants";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express from "express";
 
 import "./env-loader.js";
 import { NODE_ENV, PORT, APP_ORIGIN } from "./constants/env.js";
-import { OK } from "./constants/http.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import { checkConnection, disconnectFromDatabase } from "./services/db.js";
