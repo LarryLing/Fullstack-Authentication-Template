@@ -2,7 +2,7 @@
 
 import path from "path";
 
-import { OK } from "@fullstack-template/http/constants";
+import { HttpStatusCodes } from "@fullstack-template/http/http";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express from "express";
@@ -12,6 +12,8 @@ import { NODE_ENV, PORT, APP_ORIGIN } from "./constants/env.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import { checkConnection, disconnectFromDatabase } from "./services/db.js";
+
+const { OK } = HttpStatusCodes;
 
 const app = express();
 

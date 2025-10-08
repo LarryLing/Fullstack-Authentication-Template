@@ -1,9 +1,9 @@
+import AuthError from "@fullstack-template/error/auth-error";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
-import AuthError from "@/errors/auth-error";
 import type { User } from "@/types/user.type";
 
 import { resetPassword } from "../auth.api";

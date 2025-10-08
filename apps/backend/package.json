@@ -30,7 +30,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.3",
     "resend": "^6.0.2",
-    "@fullstack-template/http": "workspace:*"
+    "@fullstack-template/http": "workspace:*",
+    "@fullstack-template/error": "workspace:*"
   },
   "devDependencies": {
     "@fullstack-template/eslint-config": "workspace:*",

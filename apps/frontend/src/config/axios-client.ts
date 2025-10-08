@@ -1,12 +1,15 @@
-import { UNAUTHORIZED } from "@fullstack-template/http/constants";
+import { AuthErrorCodes } from "@fullstack-template/error/auth-error";
+import { HttpStatusCodes } from "@fullstack-template/http/http";
 import axios from "axios";
 
-import { AuthErrorCodes } from "@/errors/auth-error";
 import { refresh } from "@/features/auth/auth.api";
 import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 import { navigate } from "@/lib/navigation";
 
 import queryClient from "./query-client";
+
+const { UNAUTHORIZED } = HttpStatusCodes;
+const { MISSING_ACCESS_TOKEN } = AuthErrorCodes;
 
 const options = {
   baseURL: import.meta.env.VITE_API_URL,
@@ -24,7 +27,7 @@ axiosClient.interceptors.response.use(
     const { config, response } = error;
     const { status, data } = response || {};
 
-    if (status === UNAUTHORIZED && data.code === AuthErrorCodes.MISSING_ACCESS_TOKEN) {
+    if (status === UNAUTHORIZED && data.code === MISSING_ACCESS_TOKEN) {
       try {
         await refresh();
         return tokenRefreshClient.request(config);

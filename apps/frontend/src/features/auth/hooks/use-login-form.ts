@@ -1,3 +1,4 @@
+import AuthError from "@fullstack-template/error/auth-error";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -5,7 +6,6 @@ import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
 import queryClient from "@/config/query-client";
-import AuthError from "@/errors/auth-error";
 import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 
 import { login } from "../auth.api";

@@ -1,16 +1,8 @@
-import {
-  BAD_REQUEST,
-  CONFLICT,
-  CREATED,
-  INTERNAL_SERVER_ERROR,
-  NOT_FOUND,
-  OK,
-  UNAUTHORIZED,
-} from "@fullstack-template/http/constants";
+import AuthError, { AuthErrorCodes } from "@fullstack-template/error/auth-error";
+import { HttpStatusCodes } from "@fullstack-template/http/http";
 import { Request, Response } from "express";
 
 import { REFRESH_TOKEN_SECRET, APP_ORIGIN } from "../constants/env.js";
-import AuthError, { AuthErrorCodes } from "../errors/auth.error.js";
 import { User } from "../models/user.model.js";
 import { VerificationCode, VerificationCodeTypes } from "../models/verification-code.model.js";
 import db from "../services/db.js";
@@ -25,6 +17,17 @@ import { tenMinutesFromNow, ONE_DAY_IN_MILLISECONDS } from "../utils/date.js";
 import { generateJwtToken, JwtTokenType, RefreshTokenSignOptions, verifyJwtToken } from "../utils/jwt.js";
 import { getPasswordResetTemplate, getVerifyEmailTemplate, sendMail } from "../utils/send-mail.js";
 
+const { OK, NOT_FOUND, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, BAD_REQUEST, UNAUTHORIZED } = HttpStatusCodes;
+const {
+  USER_ALREADY_EXISTS,
+  USER_NOT_FOUND,
+  TOO_MANY_REQUESTS,
+  EMAIL_SEND_FAILED,
+  INVALID_VERIFICATION_CODE,
+  MISSING_REFRESH_TOKEN,
+  INVALID_REFRESH_TOKEN,
+} = AuthErrorCodes;
+
 export const me = async (req: Request, res: Response) => {
   const { user_id } = req;
 
@@ -34,7 +37,7 @@ export const me = async (req: Request, res: Response) => {
     throw new AuthError({
       message: "An account with this ID was not found",
       status: NOT_FOUND,
-      code: AuthErrorCodes.USER_NOT_FOUND,
+      code: USER_NOT_FOUND,
     });
   }
 
@@ -63,7 +66,7 @@ export const signup = async (
     throw new AuthError({
       message: "An account with this email already exists",
       status: CONFLICT,
-      code: AuthErrorCodes.USER_ALREADY_EXISTS,
+      code: USER_ALREADY_EXISTS,
     });
   }
 
@@ -83,7 +86,7 @@ export const signup = async (
     throw new AuthError({
       message: "A verification code has already been recently sent to this email",
       status: CONFLICT,
-      code: AuthErrorCodes.TOO_MANY_REQUESTS,
+      code: TOO_MANY_REQUESTS,
     });
   }
 
@@ -108,7 +111,7 @@ export const signup = async (
     throw new AuthError({
       message: "Failed to send signup email",
       status: INTERNAL_SERVER_ERROR,
-      code: AuthErrorCodes.EMAIL_SEND_FAILED,
+      code: EMAIL_SEND_FAILED,
     });
   }
 
@@ -129,7 +132,7 @@ export const confirmSignup = async (req: Request<{ code: string }, unknown, unkn
     throw new AuthError({
       message: "The verification code is invalid or has expired",
       status: BAD_REQUEST,
-      code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
+      code: INVALID_VERIFICATION_CODE,
     });
   }
 
@@ -247,7 +250,7 @@ export const forgotPassword = async (
     throw new AuthError({
       message: "Failed to send reset password email",
       status: INTERNAL_SERVER_ERROR,
-      code: AuthErrorCodes.EMAIL_SEND_FAILED,
+      code: EMAIL_SEND_FAILED,
     });
   }
 
@@ -271,7 +274,7 @@ export const confirmForgotPassword = async (
     throw new AuthError({
       message: "The password reset code is invalid or has expired",
       status: BAD_REQUEST,
-      code: AuthErrorCodes.INVALID_VERIFICATION_CODE,
+      code: INVALID_VERIFICATION_CODE,
     });
   }
 
@@ -317,7 +320,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
     throw new AuthError({
       message: "No refresh token found",
       status: UNAUTHORIZED,
-      code: AuthErrorCodes.MISSING_REFRESH_TOKEN,
+      code: MISSING_REFRESH_TOKEN,
     });
   }
 
@@ -329,7 +332,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
     throw new AuthError({
       message: "The refresh token is invalid or has expired",
       status: UNAUTHORIZED,
-      code: AuthErrorCodes.INVALID_REFRESH_TOKEN,
+      code: INVALID_REFRESH_TOKEN,
     });
   }
 

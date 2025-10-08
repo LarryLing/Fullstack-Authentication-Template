@@ -1,0 +1,26 @@
+{
+  "name": "@fullstack-template/error",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./auth-error": {
+      "types": "./src/auth-error.ts",
+      "default": "./dist/auth-error.js"
+    },
+    "./generic-error": {
+      "types": "./src/generic-error.ts",
+      "default": "./dist/generic-error.js"
+    }
+  },
+  "dependencies": {
+    "@fullstack-template/http": "workspace:*"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.2",
+    "typescript": "latest"
+  }
+}

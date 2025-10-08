@@ -34,7 +34,8 @@
     "tailwindcss": "^4.1.12",
     "zod": "^4.1.5",
     "zustand": "^5.0.8",
-    "@fullstack-template/http": "workspace:*"
+    "@fullstack-template/http": "workspace:*",
+    "@fullstack-template/error": "workspace:*"
   },
   "devDependencies": {
     "@fullstack-template/eslint-config": "workspace:*",

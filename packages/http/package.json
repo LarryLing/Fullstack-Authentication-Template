@@ -7,9 +7,9 @@
     "build": "tsc"
   },
   "exports": {
-    "./constants": {
-      "types": "./src/constants.ts",
-      "default": "./dist/constants.js"
+    "./http": {
+      "types": "./src/http.ts",
+      "default": "./dist/http.js"
     }
   },
   "devDependencies": {

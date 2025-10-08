@@ -1,9 +1,11 @@
-import { INTERNAL_SERVER_ERROR } from "@fullstack-template/http/constants";
+import GenericError from "@fullstack-template/error/generic-error";
+import { HttpStatusCodes } from "@fullstack-template/http/http";
 import { Request, Response, NextFunction } from "express";
 
 import { DEBUG } from "../constants/env.js";
-import GenericError from "../errors/generic.error.js";
 import { clearAuthCookies, REFRESH_COOKIE_PATH } from "../utils/cookie.js";
+
+const { INTERNAL_SERVER_ERROR } = HttpStatusCodes;
 
 export const errorMiddleware = (error: unknown, req: Request, res: Response, _next: NextFunction) => {
   if (DEBUG === "true") {
