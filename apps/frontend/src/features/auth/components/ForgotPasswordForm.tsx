@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { type UseForgotPasswordFormReturnType } from "../hooks/use-forgot-password.form";
+import { type UseForgotPasswordFormReturnType } from "../hooks/use-forgot-password-form";
 
 type ForgotPasswordFormProps = Pick<UseForgotPasswordFormReturnType, "form" | "onSubmit" | "isPending">;
 

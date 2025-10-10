@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { AuthAlert } from "@/features/auth/components/auth.alert";
-import { ForgotPasswordForm } from "@/features/auth/components/forgot-password.form";
-import { useForgotPasswordForm } from "@/features/auth/hooks/use-forgot-password.form";
+import { AuthAlert } from "@/features/auth/components/AuthAlert";
+import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
+import { useForgotPasswordForm } from "@/features/auth/hooks/use-forgot-password-form";
 
 export const Route = createFileRoute("/auth/forgot-password/")({
   component: ForgotPassword,

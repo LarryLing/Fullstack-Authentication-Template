@@ -6,8 +6,8 @@ import z from "zod";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { confirmForgotPassword } from "@/features/auth/auth.api";
 import { RESET_PASSWORD_QUERY_KEY } from "@/features/auth/auth.constants";
-import { AuthAlert } from "@/features/auth/components/auth.alert";
-import { ResetPasswordForm } from "@/features/auth/components/reset-password.form";
+import { AuthAlert } from "@/features/auth/components/AuthAlert";
+import { ResetPasswordForm } from "@/features/auth/components/ResetPasswordForm";
 import { useResetPasswordForm } from "@/features/auth/hooks/use-reset-password-form";
 
 const confirmForgotPasswordSearchSchema = z.object({

@@ -8,7 +8,7 @@ import { CardContent, CardFooter } from "@/components/ui/card";
 import queryClient from "@/config/query-client";
 import { confirmSignup } from "@/features/auth/auth.api";
 import { AUTH_QUERY_KEY, CONFIRM_SIGNUP_QUERY_KEY } from "@/features/auth/auth.constants";
-import { AuthAlert } from "@/features/auth/components/auth.alert";
+import { AuthAlert } from "@/features/auth/components/AuthAlert";
 
 const confirmSignupSearchSchema = z.object({
   code: z.string(),
