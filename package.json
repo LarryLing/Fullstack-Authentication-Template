@@ -1,20 +1,22 @@
 {
-  "name": "Fullstack-Authentication-Template",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "monorepo",
+  "private": true,
   "scripts": {
-    "dev": "cd backend && pnpm dev && cd ../frontend && pnpm dev",
-    "build": "cd backend && pnpm build && cd ../frontend && pnpm build",
-    "start": "cd backend && pnpm start",
-    "install": "cd backend && pnpm install && cd ../frontend && pnpm install",
-    "lint": "cd backend && pnpm lint && cd ../frontend && pnpm lint",
-    "lint:fix": "cd backend && pnpm lint:fix && cd ../frontend && pnpm lint:fix",
-    "format": "cd backend && pnpm format && cd ../frontend && pnpm format",
-    "format:check": "cd backend && pnpm format:check && cd ../frontend && pnpm format:check"
+    "build": "turbo run build",
+    "start": "turbo run start --filter=backend",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint -- --fix .",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-types": "turbo run check-types"
   },
-  "keywords": [],
-  "author": "",
+  "devDependencies": {
+    "eslint": "^9.34.0",
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.6",
+    "typescript": "5.9.2"
+  },
+  "author": "Larry Ling",
   "license": "MIT",
   "packageManager": "pnpm@10.12.1"
 }

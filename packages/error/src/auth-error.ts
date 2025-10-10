@@ -1,0 +1,20 @@
+import GenericError from "./generic-error.js";
+
+export const AuthErrorCodes = {
+  USER_NOT_FOUND: "USER_NOT_FOUND",
+  USER_ALREADY_EXISTS: "USER_ALREADY_EXISTS",
+  INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
+  TOO_MANY_REQUESTS: "TOO_MANY_REQUESTS",
+  INVALID_VERIFICATION_CODE: "INVALID_VERIFICATION_CODE",
+  MISSING_REFRESH_TOKEN: "MISSING_REFRESH_TOKEN",
+  INVALID_REFRESH_TOKEN: "INVALID_REFRESH_TOKEN",
+  MISSING_ACCESS_TOKEN: "MISSING_ACCESS_TOKEN",
+  INVALID_ACCESS_TOKEN: "INVALID_ACCESS_TOKEN",
+  EMAIL_SEND_FAILED: "EMAIL_SEND_FAILED",
+} as const;
+
+export type AuthErrorCode = (typeof AuthErrorCodes)[keyof typeof AuthErrorCodes];
+
+class AuthError extends GenericError<AuthErrorCode> {}
+
+export default AuthError;

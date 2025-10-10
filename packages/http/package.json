@@ -1,0 +1,19 @@
+{
+  "name": "@fullstack-template/http",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "exports": {
+    "./http": {
+      "types": "./src/http.ts",
+      "default": "./dist/http.js"
+    }
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.2",
+    "typescript": "latest"
+  }
+}
