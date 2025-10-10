@@ -5,5 +5,5 @@ export default [
   ...reactConfig,
   {
     ignores: ["src/components/ui/**"], // Ignore linting ShadCN/ui components
-  }
+  },
 ];
