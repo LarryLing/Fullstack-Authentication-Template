@@ -15,16 +15,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Lint affected packages
-        run: npx turbo run lint:fix --filter=[HEAD^1]
+        run: pnpm turbo run lint --filter=[HEAD^1]
 
       - name: Format files
-        run: npx turbo run format --filter=[HEAD^1]
+        run: pnpm turbo run format:check --filter=[HEAD^1]
