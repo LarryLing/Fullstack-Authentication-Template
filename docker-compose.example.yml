@@ -1,0 +1,18 @@
+services:
+  mysql-dev:
+    image: mysql:8.0
+    container_name: an_example_container_name
+    environment:
+      MYSQL_ROOT_PASSWORD: a_super_secure_root_password
+      MYSQL_DATABASE: an_example_database_name
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: a_super_secure_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - container_name_data:/var/lib/mysql
+      - ./apps/backend/db/init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+volumes:
+  container_name_data:
