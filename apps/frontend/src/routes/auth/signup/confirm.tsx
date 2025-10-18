@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, Navigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import z from "zod";
@@ -25,13 +25,18 @@ function Confirm() {
   const { isPending, isSuccess } = useQuery({
     queryKey: [CONFIRM_SIGNUP_QUERY_KEY],
     queryFn: () => confirmSignup(code),
+    enabled: !!code,
+    retry: false,
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isSuccess) {
       queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
+      navigate({ to: "/" });
     }
-  }, [isSuccess]);
+  }, [isSuccess, navigate]);
 
   if (isPending) {
     return (
@@ -39,10 +44,6 @@ function Confirm() {
         <Loader2 className="size-8 animate-spin" />
       </CardContent>
     );
-  }
-
-  if (isSuccess) {
-    return <Navigate to="/auth/login" />;
   }
 
   return (
