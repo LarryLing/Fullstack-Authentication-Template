@@ -13,7 +13,6 @@ export const router = createRouter({
   scrollRestoration: true,
   context: {
     queryClient,
-    auth: undefined!,
   },
 });
 

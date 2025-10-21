@@ -4,11 +4,9 @@ import { createRootRouteWithContext, Outlet, useNavigate } from "@tanstack/react
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import { Toaster } from "@/components/ui/sonner";
-import type { AuthContextType } from "@/features/auth/contexts/auth.context";
 import { setNavigate } from "@/lib/navigation";
 
 interface MyRouterContext {
-  auth: AuthContextType;
   queryClient: QueryClient;
 }
 

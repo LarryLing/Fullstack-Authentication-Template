@@ -1,10 +1,13 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 
 import { Card } from "@/components/ui/card";
+import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 
 export const Route = createFileRoute("/auth")({
   beforeLoad: ({ context }) => {
-    if (context.auth.user) {
+    const user = context.queryClient.getQueryData([AUTH_QUERY_KEY]);
+
+    if (user) {
       throw redirect({ to: "/" });
     }
   },
