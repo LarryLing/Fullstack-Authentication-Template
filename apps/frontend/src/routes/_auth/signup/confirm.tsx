@@ -6,9 +6,9 @@ import z from "zod";
 
 import { GenericAlert } from "@/components/GenericAlert";
 import { CardContent, CardFooter } from "@/components/ui/card";
-import { INVALID_CONFIRM_SIGNUP_CODE } from "@/constants/alert-messages";
 import { confirmSignup } from "@/features/auth/auth.api";
 import { AUTH_QUERY_KEY, CONFIRM_SIGNUP_QUERY_KEY } from "@/features/auth/auth.constants";
+import { INVALID_CONFIRM_SIGNUP_CODE } from "@/features/auth/auth.constants";
 
 const confirmSignupSearchSchema = z.object({
   code: z.coerce.string(),
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_auth/signup/confirm")({
   validateSearch: confirmSignupSearchSchema,
   beforeLoad: ({ search }) => {
     if (!search.code) {
-      throw redirect({ to: "/auth/login" });
+      throw redirect({ to: "/login" });
     }
   },
   component: Confirm,

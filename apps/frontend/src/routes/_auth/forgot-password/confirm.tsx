@@ -5,9 +5,12 @@ import z from "zod";
 
 import { GenericAlert } from "@/components/GenericAlert";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { INVALID_PASSWORD_RESET_CODE } from "@/constants/alert-messages";
 import { confirmForgotPassword } from "@/features/auth/auth.api";
-import { RESET_PASSWORD_QUERY_KEY } from "@/features/auth/auth.constants";
+import {
+  INVALID_PASSWORD_RESET_CODE,
+  RESET_PASSWORD_QUERY_KEY,
+  SUCCESSFUL_PASSWORD_RESET,
+} from "@/features/auth/auth.constants";
 import { ResetPasswordForm } from "@/features/auth/components/ResetPasswordForm";
 import { useResetPasswordForm } from "@/features/auth/hooks/use-reset-password-form";
 
@@ -72,7 +75,7 @@ function Confirm() {
       </CardHeader>
       <CardContent>
         {isResetPasswordSuccess ? (
-          <GenericAlert variant="default" title="Success!" description="Your password has been successfully reset." />
+          <GenericAlert {...SUCCESSFUL_PASSWORD_RESET} />
         ) : (
           <ResetPasswordForm {...resetPasswordForm} />
         )}
