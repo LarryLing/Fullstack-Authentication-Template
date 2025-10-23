@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import z from "zod";
@@ -25,47 +24,24 @@ export const Route = createFileRoute("/_auth/forgot-password/confirm")({
       throw redirect({ to: "/login" });
     }
   },
+  loaderDeps: ({ search: { code } }) => ({ code }),
+  loader: async ({ deps: { code }, context }) => {
+    return await context.queryClient.fetchQuery({
+      queryKey: [RESET_PASSWORD_QUERY_KEY, code],
+      queryFn: () => confirmForgotPassword(code),
+      staleTime: Infinity,
+    });
+  },
   component: Confirm,
+  pendingComponent: ConfirmPending,
+  errorComponent: ConfirmError,
 });
 
 function Confirm() {
-  const { code } = Route.useSearch();
+  const { user_id } = Route.useLoaderData();
 
-  const {
-    data,
-    isPending: isConfirmPending,
-    isError: isConfirmError,
-  } = useQuery({
-    queryKey: [RESET_PASSWORD_QUERY_KEY],
-    queryFn: () => confirmForgotPassword(code),
-    staleTime: Infinity,
-  });
-
-  const resetPasswordForm = useResetPasswordForm(data?.user_id);
+  const resetPasswordForm = useResetPasswordForm(user_id);
   const { isPending: isResetPasswordPending, isSuccess: isResetPasswordSuccess } = resetPasswordForm;
-
-  if (isConfirmPending) {
-    return (
-      <CardContent className="flex justify-center items-center">
-        <Loader2 className="size-8 animate-spin" />
-      </CardContent>
-    );
-  }
-
-  if (isConfirmError) {
-    return (
-      <>
-        <CardContent>
-          <GenericAlert {...INVALID_PASSWORD_RESET_CODE} />
-        </CardContent>
-        <CardFooter className="text-sm flex justify-center">
-          <Link to="/forgot-password" className="text-sm text-primary hover:underline cursor-default">
-            Request another link
-          </Link>
-        </CardFooter>
-      </>
-    );
-  }
 
   return (
     <>
@@ -94,6 +70,29 @@ function Confirm() {
             Request another link
           </Link>
         )}
+      </CardFooter>
+    </>
+  );
+}
+
+function ConfirmPending() {
+  return (
+    <CardContent className="flex justify-center items-center">
+      <Loader2 className="size-8 animate-spin" />
+    </CardContent>
+  );
+}
+
+function ConfirmError() {
+  return (
+    <>
+      <CardContent>
+        <GenericAlert {...INVALID_PASSWORD_RESET_CODE} />
+      </CardContent>
+      <CardFooter className="text-sm flex justify-center">
+        <Link to="/forgot-password" className="text-sm text-primary hover:underline cursor-default">
+          Request another link
+        </Link>
       </CardFooter>
     </>
   );

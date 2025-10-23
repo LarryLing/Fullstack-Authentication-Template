@@ -2,6 +2,7 @@ import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 
+import { Card, CardContent } from "./components/ui/card";
 import queryClient from "./config/query-client";
 import { getUser } from "./features/auth/auth.api";
 import { AUTH_QUERY_KEY } from "./features/auth/auth.constants";
@@ -24,9 +25,13 @@ function InnerApp() {
 
   if (isPending) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="size-8 animate-spin" />
-      </div>
+      <main className="bg-muted flex items-center justify-center h-screen">
+        <Card className="w-full max-w-sm">
+          <CardContent className="flex justify-center">
+            <Loader2 className="size-8 animate-spin" />
+          </CardContent>
+        </Card>
+      </main>
     );
   }
 

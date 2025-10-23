@@ -1,7 +1,5 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
 import z from "zod";
 
 import { GenericAlert } from "@/components/GenericAlert";
@@ -21,36 +19,34 @@ export const Route = createFileRoute("/_auth/signup/confirm")({
       throw redirect({ to: "/login" });
     }
   },
-  component: Confirm,
+  loaderDeps: ({ search: { code } }) => ({ code }),
+  loader: async ({ deps: { code }, context }) => {
+    await context.queryClient.fetchQuery({
+      queryKey: [CONFIRM_SIGNUP_QUERY_KEY, code],
+      queryFn: () => confirmSignup(code),
+      staleTime: Infinity,
+      retry: false,
+    });
+
+    await context.queryClient.invalidateQueries({
+      queryKey: [AUTH_QUERY_KEY],
+    });
+
+    throw redirect({ to: "/" });
+  },
+  pendingComponent: ConfirmPending,
+  errorComponent: ConfirmError,
 });
 
-function Confirm() {
-  const { code } = Route.useSearch();
+function ConfirmPending() {
+  return (
+    <CardContent className="flex justify-center items-center">
+      <Loader2 className="size-8 animate-spin" />
+    </CardContent>
+  );
+}
 
-  const { isPending, isSuccess } = useQuery({
-    queryKey: [CONFIRM_SIGNUP_QUERY_KEY],
-    queryFn: () => confirmSignup(code),
-    retry: false,
-  });
-
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    if (isSuccess) {
-      queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
-      navigate({ to: "/" });
-    }
-  }, [isSuccess, navigate, queryClient]);
-
-  if (isPending) {
-    return (
-      <CardContent className="flex justify-center items-center">
-        <Loader2 className="size-8 animate-spin" />
-      </CardContent>
-    );
-  }
-
+function ConfirmError() {
   return (
     <>
       <CardContent>
