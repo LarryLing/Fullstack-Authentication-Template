@@ -101,7 +101,7 @@ export const signup = async (
     VerificationCodeTypes.SIGNUP,
   ]);
 
-  const url = `${APP_ORIGIN}/auth/signup/confirm?code=${confirm_signup_code}`;
+  const url = `${APP_ORIGIN}/signup/confirm?code=${confirm_signup_code}`;
   const { error } = await sendMail({
     to: email,
     ...getVerifyEmailTemplate(url),
@@ -264,7 +264,7 @@ export const forgotPassword = async (
     VerificationCodeTypes.PASSWORD_RESET,
   ]);
 
-  const url = `${APP_ORIGIN}/auth/forgot-password/confirm?code=${password_reset_code}`;
+  const url = `${APP_ORIGIN}/forgot-password/confirm?code=${password_reset_code}`;
   const { error } = await sendMail({
     to: email,
     ...getPasswordResetTemplate(url),
