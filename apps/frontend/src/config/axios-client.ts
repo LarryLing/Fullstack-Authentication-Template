@@ -33,7 +33,7 @@ axiosClient.interceptors.response.use(
         return tokenRefreshClient.request(config);
       } catch {
         queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
-        navigate?.({ to: "/auth/login", search: { redirect: location.href } });
+        navigate?.({ to: "/login", search: { redirect: location.href } });
       }
     }
 

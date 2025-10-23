@@ -1,23 +1,39 @@
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
 
+import { Card, CardContent } from "./components/ui/card";
 import queryClient from "./config/query-client";
-import { AuthProvider } from "./features/auth/contexts/auth.provider";
-import { useAuth } from "./features/auth/hooks/use-auth";
+import { getUser } from "./features/auth/auth.api";
+import { AUTH_QUERY_KEY } from "./features/auth/auth.constants";
 import { router } from "./main";
 
 export const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <InnerApp />
-      </AuthProvider>
+      <InnerApp />
     </QueryClientProvider>
   );
 };
 
 function InnerApp() {
-  const auth = useAuth();
+  const { isPending } = useQuery({
+    queryKey: [AUTH_QUERY_KEY],
+    queryFn: getUser,
+    staleTime: Infinity,
+  });
 
-  return <RouterProvider context={{ auth }} router={router} />;
+  if (isPending) {
+    return (
+      <main className="bg-muted flex items-center justify-center h-screen">
+        <Card className="w-full max-w-sm">
+          <CardContent className="flex justify-center">
+            <Loader2 className="size-8 animate-spin" />
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
+
+  return <RouterProvider router={router} />;
 }

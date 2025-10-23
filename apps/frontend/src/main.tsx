@@ -11,9 +11,9 @@ export const router = createRouter({
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
+  notFoundMode: "fuzzy",
   context: {
     queryClient,
-    auth: undefined!,
   },
 });
 

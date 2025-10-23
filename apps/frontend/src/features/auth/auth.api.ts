@@ -12,19 +12,23 @@ export const getUser = async () => {
 };
 
 export const login = async (data: LoginSchemaType) => {
-  await axiosClient.post("/auth/login", data);
+  const response = await axiosClient.post("/auth/login", data);
+  return response.data;
 };
 
 export const signup = async (data: SignUpSchemaType) => {
-  await axiosClient.post("/auth/signup", data);
+  const response = await axiosClient.post("/auth/signup", data);
+  return response.data;
 };
 
 export const confirmSignup = async (code: string) => {
-  await axiosClient.post(`/auth/confirm-signup/${code}`);
+  const response = await axiosClient.post(`/auth/confirm-signup/${code}`);
+  return response.data;
 };
 
 export const forgotPassword = async (data: ForgotPasswordSchemaType) => {
-  await axiosClient.post("/auth/forgot-password", data);
+  const response = await axiosClient.post("/auth/forgot-password", data);
+  return response.data;
 };
 
 export const confirmForgotPassword = async (code: string) => {
@@ -33,13 +37,16 @@ export const confirmForgotPassword = async (code: string) => {
 };
 
 export const resetPassword = async (data: ResetPasswordSchemaType & { id: User["id"] }) => {
-  await axiosClient.patch(`/auth/reset-password`, data);
+  const response = await axiosClient.patch(`/auth/reset-password`, data);
+  return response.data;
 };
 
 export const logout = async () => {
-  await axiosClient.post("/auth/logout");
+  const response = await axiosClient.post("/auth/logout");
+  return response.data;
 };
 
 export const refresh = async () => {
-  await tokenRefreshClient.post("/auth/refresh");
+  const response = await tokenRefreshClient.post("/auth/refresh");
+  return response.data;
 };

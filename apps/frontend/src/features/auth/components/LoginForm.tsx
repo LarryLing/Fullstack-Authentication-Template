@@ -36,7 +36,7 @@ export const LoginForm = ({ form, onSubmit, isPending }: LoginFormProps) => {
               <div className="flex justify-between">
                 <FormLabel>Password</FormLabel>
                 <Link
-                  to="/auth/forgot-password"
+                  to="/forgot-password"
                   className="text-sm text-primary hover:underline cursor-default"
                   disabled={isPending}
                 >

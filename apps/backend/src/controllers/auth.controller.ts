@@ -101,7 +101,7 @@ export const signup = async (
     VerificationCodeTypes.SIGNUP,
   ]);
 
-  const url = `${APP_ORIGIN}/auth/signup/confirm?code=${confirm_signup_code}`;
+  const url = `${APP_ORIGIN}/signup/confirm?code=${confirm_signup_code}`;
   const { error } = await sendMail({
     to: email,
     ...getVerifyEmailTemplate(url),
@@ -141,7 +141,31 @@ export const confirmSignup = async (req: Request<{ code: string }, unknown, unkn
     VerificationCodeTypes.SIGNUP,
   ]);
 
-  await db.query("UPDATE users SET verified_at = ? WHERE id = ?", [Date.now(), confirm_signup_code[0].user_id]);
+  const now = Date.now();
+  await db.query("UPDATE users SET verified_at = ?, last_logged_in_at = ? WHERE id = ?", [
+    now,
+    now,
+    confirm_signup_code[0].user_id,
+  ]);
+
+  const refresh_token = generateJwtToken(
+    {
+      sub: confirm_signup_code[0].user_id,
+      iat: now,
+      jti: crypto.randomUUID(),
+      type: JwtTokenType.REFRESH,
+    },
+    RefreshTokenSignOptions
+  );
+
+  const access_token = generateJwtToken({
+    sub: confirm_signup_code[0].user_id,
+    iat: now,
+    jti: crypto.randomUUID(),
+    type: JwtTokenType.ACCESS,
+  });
+
+  setAuthCookies(res, access_token, refresh_token);
 
   res.status(OK).json({
     message: "Successfully confirmed signup",
@@ -240,7 +264,7 @@ export const forgotPassword = async (
     VerificationCodeTypes.PASSWORD_RESET,
   ]);
 
-  const url = `${APP_ORIGIN}/auth/forgot-password/confirm?code=${password_reset_code}`;
+  const url = `${APP_ORIGIN}/forgot-password/confirm?code=${password_reset_code}`;
   const { error } = await sendMail({
     to: email,
     ...getPasswordResetTemplate(url),
