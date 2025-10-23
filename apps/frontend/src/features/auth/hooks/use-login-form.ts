@@ -1,11 +1,10 @@
 import AuthError from "@fullstack-template/error/auth-error";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
-import queryClient from "@/config/query-client";
 import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 
 import { login } from "../auth.api";
@@ -19,6 +18,7 @@ export type UseLoginFormReturnType = {
 
 export const useLoginForm = (redirect: string | undefined): UseLoginFormReturnType => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const form = useForm<LoginSchemaType>({
     defaultValues: {

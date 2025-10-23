@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
 
     if (!user) {
       throw redirect({
-        to: "/auth/login",
+        to: "/login",
         search: {
           redirect: location.href,
         },
@@ -29,7 +29,7 @@ function Index() {
     mutationFn: logout,
     onSettled: () => {
       queryClient.clear();
-      navigate({ to: "/auth/login", replace: true });
+      navigate({ to: "/login", replace: true });
     },
   });
 
@@ -38,11 +38,9 @@ function Index() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="flex flex-col items-center gap-y-2">
-        <h3>Welcome Home!</h3>
-        <Button onClick={handleLogout}>Logout</Button>
-      </div>
+    <div className="flex flex-col items-center gap-y-2">
+      <h3>Welcome Home!</h3>
+      <Button onClick={handleLogout}>Logout</Button>
     </div>
   );
 }

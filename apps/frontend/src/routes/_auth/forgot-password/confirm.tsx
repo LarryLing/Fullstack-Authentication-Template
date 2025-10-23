@@ -1,21 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import z from "zod";
 
+import { GenericAlert } from "@/components/GenericAlert";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { INVALID_PASSWORD_RESET_CODE } from "@/constants/alert-messages";
 import { confirmForgotPassword } from "@/features/auth/auth.api";
 import { RESET_PASSWORD_QUERY_KEY } from "@/features/auth/auth.constants";
-import { AuthAlert } from "@/features/auth/components/AuthAlert";
 import { ResetPasswordForm } from "@/features/auth/components/ResetPasswordForm";
 import { useResetPasswordForm } from "@/features/auth/hooks/use-reset-password-form";
 
 const confirmForgotPasswordSearchSchema = z.object({
-  code: z.string().catch(""),
+  code: z.coerce.string(),
 });
 
-export const Route = createFileRoute("/auth/forgot-password/confirm")({
+export const Route = createFileRoute("/_auth/forgot-password/confirm")({
   validateSearch: confirmForgotPasswordSearchSchema,
+  beforeLoad: ({ search }) => {
+    if (!search.code) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: Confirm,
 });
 
@@ -37,7 +43,7 @@ function Confirm() {
 
   if (isConfirmPending) {
     return (
-      <CardContent>
+      <CardContent className="flex justify-center items-center">
         <Loader2 className="size-8 animate-spin" />
       </CardContent>
     );
@@ -47,14 +53,10 @@ function Confirm() {
     return (
       <>
         <CardContent>
-          <AuthAlert
-            variant="destructive"
-            title="Failed to confirm password reset code"
-            description="The link is either invalid or expired."
-          />
+          <GenericAlert {...INVALID_PASSWORD_RESET_CODE} />
         </CardContent>
         <CardFooter className="text-sm flex justify-center">
-          <Link to="/auth/forgot-password" className="text-sm text-primary hover:underline cursor-default">
+          <Link to="/forgot-password" className="text-sm text-primary hover:underline cursor-default">
             Request another link
           </Link>
         </CardFooter>
@@ -70,19 +72,19 @@ function Confirm() {
       </CardHeader>
       <CardContent>
         {isResetPasswordSuccess ? (
-          <AuthAlert variant="default" title="Success!" description="Your password has been successfully reset." />
+          <GenericAlert variant="default" title="Success!" description="Your password has been successfully reset." />
         ) : (
           <ResetPasswordForm {...resetPasswordForm} />
         )}
       </CardContent>
       <CardFooter className="text-sm flex justify-center">
         {isResetPasswordSuccess ? (
-          <Link to="/auth/login" className="text-sm text-primary hover:underline cursor-default">
+          <Link to="/login" className="text-sm text-primary hover:underline cursor-default">
             Go to login
           </Link>
         ) : (
           <Link
-            to="/auth/forgot-password"
+            to="/forgot-password"
             className="text-sm text-primary hover:underline cursor-default"
             disabled={isResetPasswordPending}
           >

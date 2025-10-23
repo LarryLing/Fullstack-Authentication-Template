@@ -9,7 +9,7 @@ const loginSearchSchema = z.object({
   redirect: z.string().optional().catch(""),
 });
 
-export const Route = createFileRoute("/auth/login")({
+export const Route = createFileRoute("/_auth/login")({
   validateSearch: loginSearchSchema,
   component: Login,
 });
@@ -33,7 +33,7 @@ function Login() {
       <CardFooter className="text-sm flex justify-center">
         <p>
           Don&apos;t have an account?{" "}
-          <Link to="/auth/signup" className="text-sm text-primary hover:underline cursor-default" disabled={isPending}>
+          <Link to="/signup" className="text-sm text-primary hover:underline cursor-default" disabled={isPending}>
             Sign Up
           </Link>
         </p>
