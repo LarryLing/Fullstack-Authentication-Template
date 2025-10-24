@@ -29,8 +29,8 @@ export const useLoginForm = (redirect: string | undefined): UseLoginFormReturnTy
 
   const { mutateAsync: loginMutationAsync, isPending } = useMutation({
     mutationFn: login,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
       navigate({ to: redirect || "/", replace: true });
     },
     onError: (error) => {

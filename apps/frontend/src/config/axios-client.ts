@@ -1,4 +1,5 @@
-import { AuthErrorCodes } from "@fullstack-template/error/auth-error";
+import AuthError, { AuthErrorCodes } from "@fullstack-template/error/auth-error";
+import GenericError from "@fullstack-template/error/generic-error";
 import { HttpStatusCodes } from "@fullstack-template/http/http";
 import axios from "axios";
 
@@ -32,9 +33,25 @@ axiosClient.interceptors.response.use(
         await refresh();
         return tokenRefreshClient.request(config);
       } catch {
-        queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
+        queryClient.setQueryData([AUTH_QUERY_KEY], null);
         navigate?.({ to: "/login", search: { redirect: location.href } });
       }
+    }
+
+    if (data.code && data.message && status) {
+      if (Object.values(AuthErrorCodes).includes(data.code)) {
+        throw new AuthError({
+          code: data.code,
+          message: data.message,
+          status,
+        });
+      }
+
+      throw new GenericError({
+        code: data.code,
+        message: data.message,
+        status,
+      });
     }
 
     return Promise.reject({ status, ...data });

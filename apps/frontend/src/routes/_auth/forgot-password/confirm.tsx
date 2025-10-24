@@ -59,7 +59,7 @@ function Confirm() {
       <CardFooter className="text-sm flex justify-center">
         {isResetPasswordSuccess ? (
           <Link to="/login" className="text-sm text-primary hover:underline cursor-default">
-            Go to login
+            Return to login
           </Link>
         ) : (
           <Link

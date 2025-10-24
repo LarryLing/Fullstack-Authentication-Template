@@ -28,7 +28,7 @@ function Index() {
   const { mutateAsync: logoutAsync } = useMutation({
     mutationFn: logout,
     onSettled: () => {
-      queryClient.clear();
+      queryClient.setQueryData([AUTH_QUERY_KEY], null);
       navigate({ to: "/login", replace: true });
     },
   });

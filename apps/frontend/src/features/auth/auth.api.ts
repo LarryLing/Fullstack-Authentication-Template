@@ -7,8 +7,12 @@ import type { ResetPasswordSchemaType } from "./schemas/reset-password.schema";
 import type { SignUpSchemaType } from "./schemas/signup.schema";
 
 export const getUser = async () => {
-  const response = await axiosClient.get("/auth/me");
-  return response.data as User;
+  try {
+    const response = await axiosClient.get("/auth/me");
+    return response.data as User;
+  } catch {
+    return null;
+  }
 };
 
 export const login = async (data: LoginSchemaType) => {
