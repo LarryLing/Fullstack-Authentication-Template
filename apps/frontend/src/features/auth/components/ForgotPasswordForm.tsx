@@ -3,6 +3,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PLACEHOLDERS } from "@/constants/placeholders";
 
 import { type UseForgotPasswordFormReturnType } from "../hooks/use-forgot-password-form";
 
@@ -21,7 +22,7 @@ export const ForgotPasswordForm = ({ form, onSubmit, isPending }: ForgotPassword
             <FormItem className="w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="m@example.com" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.EMAIL} {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>

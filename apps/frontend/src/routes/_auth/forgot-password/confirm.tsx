@@ -4,12 +4,9 @@ import z from "zod";
 
 import { GenericAlert } from "@/components/GenericAlert";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { AUTH_ALERT_MESSAGES } from "@/constants/alert-messages";
+import { AUTH_QUERY_KEYS } from "@/constants/query-keys";
 import { confirmForgotPassword } from "@/features/auth/auth.api";
-import {
-  INVALID_PASSWORD_RESET_CODE,
-  RESET_PASSWORD_QUERY_KEY,
-  SUCCESSFUL_PASSWORD_RESET,
-} from "@/features/auth/auth.constants";
 import { ResetPasswordForm } from "@/features/auth/components/ResetPasswordForm";
 import { useResetPasswordForm } from "@/features/auth/hooks/use-reset-password-form";
 
@@ -27,7 +24,7 @@ export const Route = createFileRoute("/_auth/forgot-password/confirm")({
   loaderDeps: ({ search: { code } }) => ({ code }),
   loader: async ({ deps: { code }, context }) => {
     return await context.queryClient.fetchQuery({
-      queryKey: [RESET_PASSWORD_QUERY_KEY, code],
+      queryKey: [AUTH_QUERY_KEYS.CONFIRM_SIGNUP, code],
       queryFn: () => confirmForgotPassword(code),
       staleTime: Infinity,
     });
@@ -51,7 +48,7 @@ function Confirm() {
       </CardHeader>
       <CardContent>
         {isResetPasswordSuccess ? (
-          <GenericAlert {...SUCCESSFUL_PASSWORD_RESET} />
+          <GenericAlert {...AUTH_ALERT_MESSAGES.SUCCESSFUL_PASSWORD_RESET} />
         ) : (
           <ResetPasswordForm {...resetPasswordForm} />
         )}
@@ -87,7 +84,7 @@ function ConfirmError() {
   return (
     <>
       <CardContent>
-        <GenericAlert {...INVALID_PASSWORD_RESET_CODE} />
+        <GenericAlert {...AUTH_ALERT_MESSAGES.INVALID_PASSWORD_RESET_CODE} />
       </CardContent>
       <CardFooter className="text-sm flex justify-center">
         <Link to="/forgot-password" className="text-sm text-primary hover:underline cursor-default">

@@ -2,12 +2,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
+import { AUTH_QUERY_KEYS } from "@/constants/query-keys";
 import { logout } from "@/features/auth/auth.api";
-import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 
 export const Route = createFileRoute("/")({
   beforeLoad: ({ context, location }) => {
-    const user = context.queryClient.getQueryData([AUTH_QUERY_KEY]);
+    const user = context.queryClient.getQueryData([AUTH_QUERY_KEYS.USER]);
 
     if (!user) {
       throw redirect({
@@ -28,7 +28,7 @@ function Index() {
   const { mutateAsync: logoutAsync } = useMutation({
     mutationFn: logout,
     onSettled: () => {
-      queryClient.setQueryData([AUTH_QUERY_KEY], null);
+      queryClient.setQueryData([AUTH_QUERY_KEYS.USER], null);
       navigate({ to: "/login", replace: true });
     },
   });

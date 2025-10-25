@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PLACEHOLDERS } from "@/constants/placeholders";
 
 import type { UseLoginFormReturnType } from "../hooks/use-login-form";
 
@@ -22,7 +23,7 @@ export const LoginForm = ({ form, onSubmit, isPending }: LoginFormProps) => {
             <FormItem className="w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="m@example.com" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.EMAIL} {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -44,7 +45,7 @@ export const LoginForm = ({ form, onSubmit, isPending }: LoginFormProps) => {
                 </Link>
               </div>
               <FormControl>
-                <Input placeholder="••••••••" type="password" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.PASSWORD} type="password" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>

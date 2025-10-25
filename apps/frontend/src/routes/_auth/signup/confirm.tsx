@@ -4,9 +4,9 @@ import z from "zod";
 
 import { GenericAlert } from "@/components/GenericAlert";
 import { CardContent, CardFooter } from "@/components/ui/card";
+import { AUTH_ALERT_MESSAGES } from "@/constants/alert-messages";
+import { AUTH_QUERY_KEYS } from "@/constants/query-keys";
 import { confirmSignup } from "@/features/auth/auth.api";
-import { AUTH_QUERY_KEY, CONFIRM_SIGNUP_QUERY_KEY } from "@/features/auth/auth.constants";
-import { INVALID_CONFIRM_SIGNUP_CODE } from "@/features/auth/auth.constants";
 
 const confirmSignupSearchSchema = z.object({
   code: z.coerce.string(),
@@ -22,14 +22,14 @@ export const Route = createFileRoute("/_auth/signup/confirm")({
   loaderDeps: ({ search: { code } }) => ({ code }),
   loader: async ({ deps: { code }, context }) => {
     await context.queryClient.fetchQuery({
-      queryKey: [CONFIRM_SIGNUP_QUERY_KEY, code],
+      queryKey: [AUTH_QUERY_KEYS.CONFIRM_SIGNUP, code],
       queryFn: () => confirmSignup(code),
       staleTime: Infinity,
       retry: false,
     });
 
     await context.queryClient.invalidateQueries({
-      queryKey: [AUTH_QUERY_KEY],
+      queryKey: [AUTH_QUERY_KEYS.USER],
     });
 
     throw redirect({ to: "/" });
@@ -50,7 +50,7 @@ function ConfirmError() {
   return (
     <>
       <CardContent>
-        <GenericAlert {...INVALID_CONFIRM_SIGNUP_CODE} />
+        <GenericAlert {...AUTH_ALERT_MESSAGES.INVALID_CONFIRM_SIGNUP_CODE} />
       </CardContent>
       <CardFooter className="text-sm flex justify-center">
         <Link to="/signup" className="text-sm text-primary hover:underline cursor-default">

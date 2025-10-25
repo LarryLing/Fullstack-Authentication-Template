@@ -1,19 +1,16 @@
-import AuthError, { AuthErrorCodes } from "@fullstack-template/error/auth-error";
+import AuthError, { AUTH_ERROR_CODES } from "@fullstack-template/error/auth-error";
 import GenericError from "@fullstack-template/error/generic-error";
-import { HttpStatusCodes } from "@fullstack-template/http/http";
+import { HTTP_STATUS_CODES } from "@fullstack-template/http/http";
 import axios from "axios";
 
+import { AUTH_QUERY_KEYS } from "@/constants/query-keys";
 import { refresh } from "@/features/auth/auth.api";
-import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
 import { navigate } from "@/lib/navigation";
 
 import queryClient from "./query-client";
 
-const { UNAUTHORIZED } = HttpStatusCodes;
-const { MISSING_ACCESS_TOKEN } = AuthErrorCodes;
-
 const options = {
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: "/api",
   withCredentials: true,
 };
 
@@ -28,18 +25,18 @@ axiosClient.interceptors.response.use(
     const { config, response } = error;
     const { status, data } = response || {};
 
-    if (status === UNAUTHORIZED && data.code === MISSING_ACCESS_TOKEN) {
+    if (status === HTTP_STATUS_CODES.UNAUTHORIZED && data.code === AUTH_ERROR_CODES.MISSING_ACCESS_TOKEN) {
       try {
         await refresh();
         return tokenRefreshClient.request(config);
       } catch {
-        queryClient.setQueryData([AUTH_QUERY_KEY], null);
+        queryClient.setQueryData([AUTH_QUERY_KEYS.USER], null);
         navigate?.({ to: "/login", search: { redirect: location.href } });
       }
     }
 
     if (data.code && data.message && status) {
-      if (Object.values(AuthErrorCodes).includes(data.code)) {
+      if (Object.values(AUTH_ERROR_CODES).includes(data.code)) {
         throw new AuthError({
           code: data.code,
           message: data.message,

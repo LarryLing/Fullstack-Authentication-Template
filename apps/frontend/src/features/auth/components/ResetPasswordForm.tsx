@@ -3,6 +3,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PLACEHOLDERS } from "@/constants/placeholders";
 
 import { type UseResetPasswordFormReturnType } from "../hooks/use-reset-password-form";
 
@@ -21,7 +22,7 @@ export const ResetPasswordForm = ({ form, onSubmit, isPending }: ResetPasswordFo
             <FormItem className="w-full">
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="••••••••" type="password" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.PASSWORD} type="password" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -34,7 +35,7 @@ export const ResetPasswordForm = ({ form, onSubmit, isPending }: ResetPasswordFo
             <FormItem className="w-full">
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input placeholder="••••••••" type="password" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.PASSWORD} type="password" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -2,7 +2,7 @@
 
 import path from "path";
 
-import { HttpStatusCodes } from "@fullstack-template/http/http";
+import { HTTP_STATUS_CODES } from "@fullstack-template/http/http";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express from "express";
@@ -12,8 +12,6 @@ import { NODE_ENV, PORT, APP_ORIGIN } from "./constants/env.js";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import authRoutes from "./routes/auth.route.js";
 import { checkConnection, disconnectFromDatabase } from "./services/db.js";
-
-const { OK } = HttpStatusCodes;
 
 const app = express();
 
@@ -40,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.get("/api/health", (_, res) => {
-  return res.status(OK).json({
+  return res.status(HTTP_STATUS_CODES.OK).json({
     status: "healthy",
   });
 });

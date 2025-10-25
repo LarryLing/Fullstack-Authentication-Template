@@ -1,5 +1,5 @@
-import AuthError, { AuthErrorCodes } from "@fullstack-template/error/auth-error";
-import { HttpStatusCodes } from "@fullstack-template/http/http";
+import AuthError, { AUTH_ERROR_CODES } from "@fullstack-template/error/auth-error";
+import { HTTP_STATUS_CODES } from "@fullstack-template/http/http";
 import { Request, Response } from "express";
 
 import { REFRESH_TOKEN_SECRET, APP_ORIGIN } from "../constants/env.js";
@@ -17,17 +17,6 @@ import { tenMinutesFromNow, ONE_DAY_IN_MILLISECONDS } from "../utils/date.js";
 import { generateJwtToken, JwtTokenType, RefreshTokenSignOptions, verifyJwtToken } from "../utils/jwt.js";
 import { getPasswordResetTemplate, getVerifyEmailTemplate, sendMail } from "../utils/send-mail.js";
 
-const { OK, NOT_FOUND, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, BAD_REQUEST, UNAUTHORIZED } = HttpStatusCodes;
-const {
-  USER_ALREADY_EXISTS,
-  USER_NOT_FOUND,
-  TOO_MANY_REQUESTS,
-  EMAIL_SEND_FAILED,
-  INVALID_VERIFICATION_CODE,
-  MISSING_REFRESH_TOKEN,
-  INVALID_REFRESH_TOKEN,
-} = AuthErrorCodes;
-
 export const me = async (req: Request, res: Response) => {
   const { user_id } = req;
 
@@ -36,12 +25,12 @@ export const me = async (req: Request, res: Response) => {
   if (!user[0]) {
     throw new AuthError({
       message: "An account with this ID was not found",
-      status: NOT_FOUND,
-      code: USER_NOT_FOUND,
+      status: HTTP_STATUS_CODES.NOT_FOUND,
+      code: AUTH_ERROR_CODES.USER_NOT_FOUND,
     });
   }
 
-  res.status(OK).json({
+  res.status(HTTP_STATUS_CODES.OK).json({
     message: "Successfully retrieved user",
     data: {
       user: {
@@ -65,8 +54,8 @@ export const signup = async (
   if (user[0] && user[0].verified_at !== null) {
     throw new AuthError({
       message: "An account with this email already exists",
-      status: CONFLICT,
-      code: USER_ALREADY_EXISTS,
+      status: HTTP_STATUS_CODES.CONFLICT,
+      code: AUTH_ERROR_CODES.USER_ALREADY_EXISTS,
     });
   }
 
@@ -85,8 +74,8 @@ export const signup = async (
   if (codes.length > 0) {
     throw new AuthError({
       message: "A verification code has already been recently sent to this email",
-      status: CONFLICT,
-      code: TOO_MANY_REQUESTS,
+      status: HTTP_STATUS_CODES.CONFLICT,
+      code: AUTH_ERROR_CODES.TOO_MANY_REQUESTS,
     });
   }
 
@@ -110,12 +99,12 @@ export const signup = async (
   if (error) {
     throw new AuthError({
       message: "Failed to send signup email",
-      status: INTERNAL_SERVER_ERROR,
-      code: EMAIL_SEND_FAILED,
+      status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      code: AUTH_ERROR_CODES.EMAIL_SEND_FAILED,
     });
   }
 
-  res.status(CREATED).json({
+  res.status(HTTP_STATUS_CODES.CREATED).json({
     message: "Successfully sent signup email",
   });
 };
@@ -131,8 +120,8 @@ export const confirmSignup = async (req: Request<{ code: string }, unknown, unkn
   if (!confirm_signup_code[0]) {
     throw new AuthError({
       message: "The verification code is invalid or has expired",
-      status: BAD_REQUEST,
-      code: INVALID_VERIFICATION_CODE,
+      status: HTTP_STATUS_CODES.BAD_REQUEST,
+      code: AUTH_ERROR_CODES.INVALID_VERIFICATION_CODE,
     });
   }
 
@@ -167,7 +156,7 @@ export const confirmSignup = async (req: Request<{ code: string }, unknown, unkn
 
   setAuthCookies(res, access_token, refresh_token);
 
-  res.status(OK).json({
+  res.status(HTTP_STATUS_CODES.OK).json({
     message: "Successfully confirmed signup",
   });
 };
@@ -183,8 +172,8 @@ export const login = async (
   if (!user[0] || user[0].verified_at === null || user[0].password === null) {
     throw new AuthError({
       message: "Invalid email or password",
-      status: UNAUTHORIZED,
-      code: AuthErrorCodes.INVALID_CREDENTIALS,
+      status: HTTP_STATUS_CODES.UNAUTHORIZED,
+      code: AUTH_ERROR_CODES.INVALID_CREDENTIALS,
     });
   }
 
@@ -192,8 +181,8 @@ export const login = async (
   if (!is_password_correct) {
     throw new AuthError({
       message: "Invalid email or password",
-      status: UNAUTHORIZED,
-      code: AuthErrorCodes.INVALID_CREDENTIALS,
+      status: HTTP_STATUS_CODES.UNAUTHORIZED,
+      code: AUTH_ERROR_CODES.INVALID_CREDENTIALS,
     });
   }
 
@@ -219,7 +208,7 @@ export const login = async (
 
   setAuthCookies(res, access_token, refresh_token);
 
-  res.status(OK).json({
+  res.status(HTTP_STATUS_CODES.OK).json({
     message: "Successfully logged in",
   });
 };
@@ -235,8 +224,8 @@ export const forgotPassword = async (
   if (!user[0] || user[0].verified_at === null) {
     throw new AuthError({
       message: "An account with this email was not found",
-      status: NOT_FOUND,
-      code: AuthErrorCodes.USER_NOT_FOUND,
+      status: HTTP_STATUS_CODES.NOT_FOUND,
+      code: AUTH_ERROR_CODES.USER_NOT_FOUND,
     });
   }
 
@@ -248,8 +237,8 @@ export const forgotPassword = async (
   if (codes.length > 0) {
     throw new AuthError({
       message: "A password reset code has already been recently sent to this email",
-      status: CONFLICT,
-      code: AuthErrorCodes.TOO_MANY_REQUESTS,
+      status: HTTP_STATUS_CODES.CONFLICT,
+      code: AUTH_ERROR_CODES.TOO_MANY_REQUESTS,
     });
   }
 
@@ -273,12 +262,12 @@ export const forgotPassword = async (
   if (error) {
     throw new AuthError({
       message: "Failed to send reset password email",
-      status: INTERNAL_SERVER_ERROR,
-      code: EMAIL_SEND_FAILED,
+      status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      code: AUTH_ERROR_CODES.EMAIL_SEND_FAILED,
     });
   }
 
-  res.status(OK).json({
+  res.status(HTTP_STATUS_CODES.OK).json({
     message: "Successfully sent reset password email",
   });
 };
@@ -297,8 +286,8 @@ export const confirmForgotPassword = async (
   if (!password_reset_code[0]) {
     throw new AuthError({
       message: "The password reset code is invalid or has expired",
-      status: BAD_REQUEST,
-      code: INVALID_VERIFICATION_CODE,
+      status: HTTP_STATUS_CODES.BAD_REQUEST,
+      code: AUTH_ERROR_CODES.INVALID_VERIFICATION_CODE,
     });
   }
 
@@ -307,7 +296,7 @@ export const confirmForgotPassword = async (
     VerificationCodeTypes.PASSWORD_RESET,
   ]);
 
-  res.status(OK).json({
+  res.status(HTTP_STATUS_CODES.OK).json({
     message: "Successfully validated reset password code",
     user_id: password_reset_code[0].user_id,
   });
@@ -324,7 +313,7 @@ export const resetPassword = async (
 
   clearAuthCookies(res);
 
-  res.status(OK).json({
+  res.status(HTTP_STATUS_CODES.OK).json({
     message: "Successfully reset password",
   });
 };
@@ -332,7 +321,7 @@ export const resetPassword = async (
 export const logout = async (_req: Request, res: Response): Promise<void> => {
   clearAuthCookies(res);
 
-  res.status(OK).json({
+  res.status(HTTP_STATUS_CODES.OK).json({
     message: "Successfully logged out",
   });
 };
@@ -343,8 +332,8 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
   if (!refresh_token) {
     throw new AuthError({
       message: "No refresh token found",
-      status: UNAUTHORIZED,
-      code: MISSING_REFRESH_TOKEN,
+      status: HTTP_STATUS_CODES.UNAUTHORIZED,
+      code: AUTH_ERROR_CODES.MISSING_REFRESH_TOKEN,
     });
   }
 
@@ -355,8 +344,8 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
   if (!payload || payload.type !== JwtTokenType.REFRESH || payload.exp! < Date.now()) {
     throw new AuthError({
       message: "The refresh token is invalid or has expired",
-      status: UNAUTHORIZED,
-      code: INVALID_REFRESH_TOKEN,
+      status: HTTP_STATUS_CODES.UNAUTHORIZED,
+      code: AUTH_ERROR_CODES.INVALID_REFRESH_TOKEN,
     });
   }
 
@@ -385,7 +374,7 @@ export const refresh = async (req: Request, res: Response): Promise<void> => {
     res.cookie("refresh_token", new_refresh_token, getRefreshTokenCookieOptions());
   }
 
-  res.status(OK).cookie("access_token", new_access_token, getAccessTokenCookieOptions()).json({
+  res.status(HTTP_STATUS_CODES.OK).cookie("access_token", new_access_token, getAccessTokenCookieOptions()).json({
     message: "Successfully refreshed tokens",
   });
 };

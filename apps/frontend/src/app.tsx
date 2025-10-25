@@ -4,8 +4,8 @@ import { Loader2 } from "lucide-react";
 
 import { Card, CardContent } from "./components/ui/card";
 import queryClient from "./config/query-client";
+import { AUTH_QUERY_KEYS } from "./constants/query-keys";
 import { getUser } from "./features/auth/auth.api";
-import { AUTH_QUERY_KEY } from "./features/auth/auth.constants";
 import { router } from "./main";
 
 export const App = () => {
@@ -18,7 +18,7 @@ export const App = () => {
 
 function InnerApp() {
   const { isPending } = useQuery({
-    queryKey: [AUTH_QUERY_KEY],
+    queryKey: [AUTH_QUERY_KEYS.USER],
     queryFn: getUser,
     staleTime: Infinity,
   });

@@ -1,11 +1,9 @@
 import GenericError from "@fullstack-template/error/generic-error";
-import { HttpStatusCodes } from "@fullstack-template/http/http";
+import { HTTP_STATUS_CODES } from "@fullstack-template/http/http";
 import { Request, Response, NextFunction } from "express";
 
 import { DEBUG } from "../constants/env.js";
 import { clearAuthCookies, REFRESH_COOKIE_PATH } from "../utils/cookie.js";
-
-const { INTERNAL_SERVER_ERROR } = HttpStatusCodes;
 
 export const errorMiddleware = (error: unknown, req: Request, res: Response, _next: NextFunction) => {
   if (DEBUG === "true") {
@@ -36,7 +34,7 @@ export const errorMiddleware = (error: unknown, req: Request, res: Response, _ne
     error_message = "An unknown error occurred.";
   }
 
-  res.status(INTERNAL_SERVER_ERROR).json({
+  res.status(HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR).json({
     message: error_message,
     code: "INTERNAL_SERVER_ERROR",
   });

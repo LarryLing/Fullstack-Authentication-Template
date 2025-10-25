@@ -3,6 +3,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PLACEHOLDERS } from "@/constants/placeholders";
 
 import type { UseSignUpFormReturnType } from "../hooks/use-signup-form";
 
@@ -21,7 +22,7 @@ export const SignUpForm = ({ form, onSubmit, isPending }: SignUpFormProps) => {
             <FormItem className="w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="m@example.com" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.EMAIL} {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -34,7 +35,7 @@ export const SignUpForm = ({ form, onSubmit, isPending }: SignUpFormProps) => {
             <FormItem className="w-full">
               <FormLabel>First Name</FormLabel>
               <FormControl>
-                <Input placeholder="John" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.FIRST_NAME} {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -47,7 +48,7 @@ export const SignUpForm = ({ form, onSubmit, isPending }: SignUpFormProps) => {
             <FormItem className="w-full">
               <FormLabel>Last Name</FormLabel>
               <FormControl>
-                <Input placeholder="Doe" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.LAST_NAME} {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -60,7 +61,7 @@ export const SignUpForm = ({ form, onSubmit, isPending }: SignUpFormProps) => {
             <FormItem className="w-full">
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="••••••••" type="password" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.PASSWORD} type="password" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -73,7 +74,7 @@ export const SignUpForm = ({ form, onSubmit, isPending }: SignUpFormProps) => {
             <FormItem className="w-full">
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input placeholder="••••••••" type="password" {...field} disabled={isPending} />
+                <Input placeholder={PLACEHOLDERS.PASSWORD} type="password" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>

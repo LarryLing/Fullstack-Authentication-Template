@@ -1,6 +1,6 @@
 import GenericError from "./generic-error.js";
 
-export const AuthErrorCodes = {
+export const AUTH_ERROR_CODES = {
   USER_NOT_FOUND: "USER_NOT_FOUND",
   USER_ALREADY_EXISTS: "USER_ALREADY_EXISTS",
   INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
@@ -13,7 +13,7 @@ export const AuthErrorCodes = {
   EMAIL_SEND_FAILED: "EMAIL_SEND_FAILED",
 } as const;
 
-export type AuthErrorCode = (typeof AuthErrorCodes)[keyof typeof AuthErrorCodes];
+export type AuthErrorCode = (typeof AUTH_ERROR_CODES)[keyof typeof AUTH_ERROR_CODES];
 
 class AuthError extends GenericError<AuthErrorCode> {}
 

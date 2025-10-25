@@ -6,7 +6,7 @@ import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { GenericAlert } from "@/components/GenericAlert";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Toaster } from "@/components/ui/sonner";
-import { PAGE_NOT_FOUND } from "@/constants/alert-messages";
+import { GENERIC_ALERT_MESSAGES } from "@/constants/alert-messages";
 import { setNavigate } from "@/lib/navigation";
 
 interface MyRouterContext {
@@ -37,7 +37,7 @@ function NotFound() {
   return (
     <Card className="w-full max-w-sm">
       <CardContent>
-        <GenericAlert {...PAGE_NOT_FOUND} />
+        <GenericAlert {...GENERIC_ALERT_MESSAGES.PAGE_NOT_FOUND} />
       </CardContent>
       <CardFooter className="text-sm flex justify-center">
         <Link to="/" className="text-sm text-primary hover:underline cursor-default">

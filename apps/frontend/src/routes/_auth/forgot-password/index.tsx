@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { GenericAlert } from "@/components/GenericAlert";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { SUCCESSFUL_PASSWORD_RESET_SEND } from "@/features/auth/auth.constants";
+import { AUTH_ALERT_MESSAGES } from "@/constants/alert-messages";
 import { ForgotPasswordForm } from "@/features/auth/components/ForgotPasswordForm";
 import { useForgotPasswordForm } from "@/features/auth/hooks/use-forgot-password-form";
 
@@ -23,7 +23,7 @@ function ForgotPassword() {
       </CardHeader>
       <CardContent>
         {isSuccess ? (
-          <GenericAlert {...SUCCESSFUL_PASSWORD_RESET_SEND} />
+          <GenericAlert {...AUTH_ALERT_MESSAGES.SUCCESSFUL_PASSWORD_RESET_SEND} />
         ) : (
           <ForgotPasswordForm {...useForgotPasswordFormReturn} />
         )}

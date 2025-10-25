@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
-import { AUTH_QUERY_KEY } from "@/features/auth/auth.constants";
+import { AUTH_QUERY_KEYS } from "@/constants/query-keys";
 
 import { login } from "../auth.api";
 import { LoginSchema, type LoginSchemaType } from "../schemas/login.schema";
@@ -30,7 +30,7 @@ export const useLoginForm = (redirect: string | undefined): UseLoginFormReturnTy
   const { mutateAsync: loginMutationAsync, isPending } = useMutation({
     mutationFn: login,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEY] });
+      await queryClient.invalidateQueries({ queryKey: [AUTH_QUERY_KEYS.USER] });
       navigate({ to: redirect || "/", replace: true });
     },
     onError: (error) => {
